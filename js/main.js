@@ -7,6 +7,7 @@ function onInit() {
     renderGallery();
     renderSavedMemes()
     renderKeyWords()
-    addMouseListeners()
+    addListeners()
+    onFlexible()
 }
 

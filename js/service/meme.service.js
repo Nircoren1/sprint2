@@ -14,14 +14,15 @@ var gImgs = [
     { id: 12, url: '../../assets/meme-imgs-square/12.jpg', keywords: ['funny', 'cat'] },
     { id: 13, url: '../../assets/meme-imgs-square/13.jpg', keywords: ['funny', 'cat'] },
     { id: 14, url: '../../assets/meme-imgs-square/14.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-square/15.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+
 
 ];
 var gKeywords = loadFromStorage('keywords') ? loadFromStorage('keywords') : {
     trump: 20,
     funny: 20,
-    cute: 50,
-    dog: 40,
+    cute: 43,
+    dog: 30,
     bed: 20,
     baby: 20,
 }
@@ -29,34 +30,33 @@ var gMeme = {
     selectedImgId: 5,
     selectedLineIdx: -1,
     lines: [
-        {
-            txt: '😜',
-            size: 20,
-            align: 'left',
-            color: 'blue',
-            'stroke-color': 'black',
-            coords: [0, 0, 0, 0]
-        },
-        {
-            txt: 'line Dp',
-            size: 20,
-            align: 'left',
-            color: 'blue',
-            'stroke-color': 'black'
-        }
+        // {
+        //     txt: '😜',
+        //     size: 20,
+        //     align: 'left',
+        //     color: 'blue',
+        //     'stroke-color': 'black',
+        //     coords: [0, 0, 0, 0]
+        // },
+        // {
+        //     txt: 'line Dp',
+        //     size: 20,
+        //     align: 'left',
+        //     color: 'blue',
+        //     'stroke-color': 'black'
+        // }
     ]
 }
 
 var gSavedMemes = loadFromStorage('savedMemes') ? loadFromStorage('savedMemes') : []
-let galleryLength = 18;
 
 
 function getGMeme() {
     return gMeme;
 }
 
-function getGalleryLength() {
-    return galleryLength;
+function setGmeme(meme) {
+    gMeme = meme
 }
 
 function getGsavedMemes() {
@@ -78,12 +78,12 @@ function getKeywords() {
 function setLineTxt(txt) {
     //change 0 to current targeted line.
     //put value of input in input when selecting txt.
-    if(gMeme.selectedLineIdx === -1) return
+    if (gMeme.selectedLineIdx === -1) return
     gMeme.lines[gMeme.selectedLineIdx].txt = txt
 }
 
 //need to test it.
-function pushLine(attributes){
+function pushLine(attributes) {
     gMeme.lines.push(attributes)
 }
 
@@ -104,7 +104,7 @@ function setFontSize(val) {
     gMeme.lines[gMeme.selectedLineIdx].size = gMeme.lines[gMeme.selectedLineIdx].size + val
 }
 
-function setSelectedLine() {
+function setSwitchedLine() {
     const lines = gMeme.lines
     let idx = gMeme.selectedLineIdx + 1
     if (idx >= lines.length) idx = 0
@@ -119,7 +119,8 @@ function saveMeme(url) {
 }
 
 function updateKeywords(keyword) {
-    gKeywords[keyword] = gKeywords[keyword] + 5
+    if (gKeywords[keyword] >= 60) return
+    gKeywords[keyword] = gKeywords[keyword] + 2
     saveToStorage('keywords', gKeywords)
 }
 
@@ -127,13 +128,30 @@ function updateKeywords(keyword) {
 function moveText(dx, dy) {
     gMeme.lines[gMeme.selectedLineIdx].x += dx
     gMeme.lines[gMeme.selectedLineIdx].y += dy
-  
-  }
 
-  function setGrabbedText(idx){
+}
+
+function setSelectedLine(idx) {
     gMeme.selectedLineIdx = idx
-  }
+}
 
-function getSelectedLine(){
+function getSelectedLine() {
     return gMeme.selectedLineIdx
+}
+
+function removeLine() {
+    gMeme.lines.splice([gMeme.selectedLineIdx], 1);
+    gMeme.selectedLineIdx--
+}
+
+function alignText(dir) {
+    gMeme.lines[gMeme.selectedLineIdx].align = dir;
+}
+
+function updateText(key, idx) {
+    const lineText = gMeme.lines[gMeme.selectedLineIdx].txt
+    if (key === 'Backspace') return gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, -1)
+
+    gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, idx) + key + lineText.slice(idx)
+
 }

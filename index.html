@@ -6,76 +6,100 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./style/font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="./style/main.css">
 </head>
 
 <body onload="onInit()">
+
     <header>
-        <img src="" alt="">
+        <div class="logo-container">
+            <img src="./assets/logo/logo.png" class="logo" alt="">
+        </div>
         <ul>
-            <li>Gallery</li>
-            <li>About</li>
+            <li><a class="active gallery-link" onclick="showGallery(this)">Gallery</a></li>
+            <li><a class="memes-link" onclick="showSavedMemes(this)">Memes</a></li>
         </ul>
     </header>
-    <section class="meme-creator">
+    </section>
+    <section class="gallery-container">
+        <div class="fliter-container">
+            <div class='filter-input-container'>
+                <img class="search-icon" src="./assets/icons/search-icon.svg" alt="">
+                <input list="keywords" placeholder="Search" class="filter-input" oninput="onFilterGallery(this.value)">
+            </div>
+            <datalist id="keywords">
+                <option value="cute">
+                <option value="trump">
+                <option value="dog">
+                <option value="Opera">
+                <option value="Safari">
+            </datalist>
+            <div class="keywords-by-popularity"></div>
+        </div>
+        <div class="gallery"></div>
+
+    </section>
+    <section class="meme-creator hide">
         <div class="canvas-container">
-            <canvas width="400" height="400" style="outline: 1px solid green" class="canvas" onclick=""></canvas>
+            <canvas width="500" height="500" class="canvas" onclick=""></canvas>
         </div>
         <div class="edit-container">
-            <input type="text" name="" id="" class="txt-input" oninput="onInputChange(this.value)">
-            <div>
-                <button class="add-line" onclick="onAddLine()">add</button>
-                <button class="" onclick="onSwitchLine()">switch</button>
+            <div class="flex justify-center">
+                <input type="text" name="" id="" class="txt-input" oninput="onInputChange(this.value)">
             </div>
 
-
-            <input type="color" name="" id="" class="color-input" oninput="onColorChange(this.value)">
-            <div class="">
-                <button value="1" class="increase-font" onclick="onFontSizeChange(this.value)">+</button>
-                <button value="-1" class="decrease-font" onclick="onFontSizeChange(this.value)">-</button>
+            <div class="add-switch-remove-container">
+                <button class="switch-btn" onclick="onSwitchLine()"><img src="./assets/icons/switch-icon.png"
+                        alt=""></button>
+                <button class="add-line" onclick="onAddLine()"><img src="./assets/icons/plus-icon.png" alt=""></button>
+                <button class="remove-btn" onclick="onRemoveLine()"><img src="./assets/icons/trash-icon.svg"
+                        alt=""></button>
             </div>
-            <button onclick="onFlexible()">I'm Flexible</button>
-            <button onclick="onSaveMeme()">save</button>
-            <div>
+            <div class="text-editor-container">
+                <button value="1" class="increase-font" onclick="onFontSizeChange(this.value)"><img
+                        src="./assets/icons/font-increase.png" alt=""></button>
+                <button value="-1" class="decrease-font" onclick="onFontSizeChange(this.value)"><img
+                        src="./assets/icons/font-decrease.png" alt=""></button>
+                <button onclick="onAlign('left')"><img src="./assets/icons/text-align-left.svg" alt=""></button>
+                <button onclick="onAlign('center')"><img src="./assets/icons/text-align-center.svg" alt=""></button>
+                <button onclick="onAlign('right')"><img src="./assets/icons/text-align-right.svg"></button>
+                <div>
+                    <!-- <button class="color-btn" onclick="openColorPicker()">change color</button> -->
+                    <input style="width:50px; height:50px; border-radius:10px;" type="color" name="" id=""
+                        class="color-input" oninput="onColorChange(this.value)">
+                </div>
+
+                <button onclick="onFlexible()"><img src="./assets/icons/dice.png" alt=""></button>
+                <button onclick="onSaveMeme()"><img src="./assets/icons/save-icon.png" alt=""></button>
+            </div>
+            <div class="emoji-container">
                 <div class="stickers" onclick="onAddEmoji('😜')">😜</div>
                 <div class="stickers" onclick="onAddEmoji('🦁')">🦁</div>
                 <div class="stickers" onclick="onAddEmoji('⌚')">⌚</div>
             </div>
 
-            <div>
-                <a href="#" class="btn" onclick="downloadImg(this)" download="my-img.jpg">Download as jpeg</a>
+            <div class="share-download-container">
+                <div class="share-container"></div>
                 <button class="btn" onclick="uploadImg()">
                     Upload Image from Canvas
                 </button>
+                <div>
+                    <a href="#" class="download-btn" onclick="downloadImg(this)" download="my-img.jpg">
+                        <img src="./assets/icons/download.svg" alt="">
+                        <span>Download</span>
+                    </a>
+
+                </div>
+
                 <p class="user-msg"></p>
             </div>
-
-            <input id="upload" type="file" onChange="handleImageUpload()" />
-            <img id="display-image" src="" />
-
-
-
-
-            <div class="share-container"></div>
-        </div>
-
         </div>
     </section>
-    <section class="gallery-container">
-        <input list="keywords" class="filter-input" oninput="onFilterGallery(this.value)">
-        <div class="keywords-by-popularity"></div>
-        <datalist id="keywords">
-            <option value="cute">
-            <option value="trump">
-            <option value="dog">
-            <option value="Opera">
-            <option value="Safari">
-        </datalist>
-        <div class="gallery"></div>
-    </section>
-    <input class="uploaded-img" type="file" accept="image/*">
-    <img class="img-div" src="" alt="">
-    <section class="saved-memes gallery"></section>
+    <section class="saved-memes gallery hide"></section>
+
+
+
     <script src="./js/service/storage.service.js"></script>
     <script src="./js/service/upload.service.js"></script>
     <script src="./js/service/utils.service.js"></script>
