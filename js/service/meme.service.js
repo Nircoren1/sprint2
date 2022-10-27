@@ -58,7 +58,6 @@ function setSelectedImg(id){
 }
 
 function setTextHeight(val){
-    console.log(val);
     gMeme.lines[gMeme.selectedLineIdx].y += +val
 }
 
