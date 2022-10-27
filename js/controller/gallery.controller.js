@@ -1,4 +1,4 @@
-let gFilterText = ''
+let gFilterText = '';
 
 function renderGallery() {
     const images = getGimgs().filter(img => img.keywords.join().includes(gFilterText.toLocaleLowerCase()))
@@ -17,7 +17,9 @@ function onImgSelect(idx) {
 
 function onFilterGallery(value) {
     gFilterText = value;
+    updateKeywords(value);
     renderGallery();
+    renderKeyWords();
 }
 
 function showMemeCreator() {

@@ -9,11 +9,20 @@ var gImgs = [
     { id: 7, url: '../../assets/meme-imgs-square/7.jpg', keywords: ['funny', 'cat'] },
     { id: 8, url: '../../assets/meme-imgs-square/8.jpg', keywords: ['funny', 'cat'] },
     { id: 9, url: '../../assets/meme-imgs-square/9.jpg', keywords: ['funny', 'cat'] },
-    { id: 10, url: '../../assets/meme-imgs-square/10.jpg', keywords: ['funny', 'cat'] },
+    { id: 10, url: '../../assets/meme-imgs-square/10.jpg', keywords: ['funny', 'cat', 'obama'] },
     { id: 11, url: '../../assets/meme-imgs-square/11.jpg', keywords: ['funny', 'cat'] },
     { id: 12, url: '../../assets/meme-imgs-square/12.jpg', keywords: ['funny', 'cat'] },
     { id: 13, url: '../../assets/meme-imgs-square/13.jpg', keywords: ['funny', 'cat'] },
     { id: 14, url: '../../assets/meme-imgs-square/14.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/Oprah-You-Get-A.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/X-Everywhere.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
     { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
 
 
@@ -71,18 +80,11 @@ function getKeywords() {
     return gKeywords
 }
 
-// function getGimgs(){
-//     return gImgs
-// }
-
 function setLineTxt(txt) {
-    //change 0 to current targeted line.
-    //put value of input in input when selecting txt.
     if (gMeme.selectedLineIdx === -1) return
     gMeme.lines[gMeme.selectedLineIdx].txt = txt
 }
 
-//need to test it.
 function pushLine(attributes) {
     gMeme.lines.push(attributes)
 }
@@ -94,7 +96,6 @@ function setLines(val) {
 function setImg(idx) {
     gMeme.selectedImgId = idx;
 }
-
 
 function setColor(color) {
     gMeme.lines[gMeme.selectedLineIdx].color = color
@@ -113,30 +114,31 @@ function setSwitchedLine() {
 
 
 function saveMeme(url) {
-    gMeme.imgUrl = url
-    gSavedMemes.push(gMeme)
-    saveToStorage('savedMemes', gSavedMemes)
+    gMeme.imgUrl = url;
+    gSavedMemes.push(gMeme);
+    saveToStorage('savedMemes', gSavedMemes);
 }
 
 function updateKeywords(keyword) {
-    if (gKeywords[keyword] >= 60) return
-    gKeywords[keyword] = gKeywords[keyword] + 2
-    saveToStorage('keywords', gKeywords)
+    keyword = keyword.toLowerCase();
+    if (gKeywords[keyword] >= 60) return;
+    if (gKeywords[keyword]) gKeywords[keyword] += 2;
+    saveToStorage('keywords', gKeywords);
 }
 
 
 function moveText(dx, dy) {
-    gMeme.lines[gMeme.selectedLineIdx].x += dx
-    gMeme.lines[gMeme.selectedLineIdx].y += dy
+    gMeme.lines[gMeme.selectedLineIdx].x += dx;
+    gMeme.lines[gMeme.selectedLineIdx].y += dy;
 
 }
 
 function setSelectedLine(idx) {
-    gMeme.selectedLineIdx = idx
+    gMeme.selectedLineIdx = idx;
 }
 
 function getSelectedLine() {
-    return gMeme.selectedLineIdx
+    return gMeme.selectedLineIdx;
 }
 
 function removeLine() {
@@ -149,9 +151,9 @@ function alignText(dir) {
 }
 
 function updateText(key, idx) {
-    const lineText = gMeme.lines[gMeme.selectedLineIdx].txt
-    if (key === 'Backspace') return gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, -1)
+    const lineText = gMeme.lines[gMeme.selectedLineIdx].txt;
+    if (key === 'Backspace') return gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, -1);
 
-    gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, idx) + key + lineText.slice(idx)
+    gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, idx) + key + lineText.slice(idx);
 
 }

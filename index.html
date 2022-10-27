@@ -42,7 +42,7 @@
     </section>
     <section class="meme-creator hide">
         <div class="canvas-container">
-            <canvas width="500" height="500" class="canvas" onclick=""></canvas>
+            <canvas width="400" height="400" class="canvas" onclick=""></canvas>
         </div>
         <div class="edit-container">
             <div class="flex justify-center">
@@ -76,25 +76,23 @@
             <div class="emoji-container">
                 <div class="stickers" onclick="onAddEmoji('😜')">😜</div>
                 <div class="stickers" onclick="onAddEmoji('🦁')">🦁</div>
+                <div class="stickers" onclick="onAddEmoji('🤬')">🤬</div>
                 <div class="stickers" onclick="onAddEmoji('⌚')">⌚</div>
+                <div class="stickers" onclick="onAddEmoji('😈')">😈</div>
             </div>
 
             <div class="share-download-container">
-                <div class="share-container"></div>
-                <button class="btn" onclick="uploadImg()">
-                    Upload Image from Canvas
+                <button class="share-btn" onclick="uploadImg()">
+                    <img src="./assets/icons/share.svg" alt="">
+                    <span>Share</span>
                 </button>
                 <div>
                     <a href="#" class="download-btn" onclick="downloadImg(this)" download="my-img.jpg">
                         <img src="./assets/icons/download.svg" alt="">
                         <span>Download</span>
                     </a>
-
                 </div>
-
-                <p class="user-msg"></p>
             </div>
-        </div>
     </section>
     <section class="saved-memes gallery hide"></section>
 

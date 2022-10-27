@@ -13,7 +13,7 @@ function getRandomColor(){
 }
 
 function randStr(wordCount = 3) {
-    var words = ['hi', 'i', 'drink', 'eat', 'fight'];
+    var words = ['hi', 'i', 'drink', 'eat', 'Why','how','coding','hard','when','you','feel','please'];
     var txt = ''
     while (wordCount > 0) {
         wordCount--;

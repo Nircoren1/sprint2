@@ -3,6 +3,11 @@
     src: url(./fonts/Poppins-Regular.ttf);
 }
 
+@font-face {
+    font-family: impacted;
+    src: url(./fonts/Impacted.ttf);
+}
+
 .flex {
     display: flex;
 }
@@ -34,6 +39,7 @@ body {
 
 button {
     border-radius: 10px;
+    cursor: pointer;
 }
 
 img {
@@ -218,7 +224,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px 60px 60px 60px;
+    padding: 30px 60px;
 
 }
 
@@ -230,7 +236,7 @@ a {
     border-radius: 30px;
     background-color: #383b42;
     align-items: center;
-    padding: 20px 40px;
+    padding: 10px 40px;
 
 }
 
@@ -248,7 +254,6 @@ a {
     width: 57px;
     height: 53px;
     padding: 10px;
-    max-width: 1000px;
 }
 
 .add-switch-remove-container {
@@ -327,22 +332,41 @@ a {
     grid-template-columns: 1fr 1fr;
 }
 
-.download-btn {
+.share-download-container button,
+.share-download-container a {
     display: block;
-    width: 213px;
-    height: 51px;
-    box-shadow: 1px 6px 0 #632687, inset 0 5px 0 #ffffff;
     border-radius: 15px;
-    background-color: #8f44bb;
+    font-size: 21px;
     text-align: center;
     line-height: 51px;
-    font-size: 21px;
+    width: 213px;
+    height: 51px;
+    cursor: pointer;
+    color: white;
 }
 
-.download-btn img {
+.share-download-container img {
     width: 20px;
     height: 21px;
+    margin-right: 5px;
 }
+
+
+.download-btn {
+    box-shadow: 1px 6px 0 #632687, inset 0 5px 0 #ffffff;
+    background-color: #8f44bb;
+    text-decoration: none;
+}
+
+.share-download-container .share-btn {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
+    box-shadow: 1px 6px 0 #165c9c, inset 0 5px 0 #ffffff;
+    background-color: #1e7cd3;
+}
+
 
 
 @media (max-width:760px) {
@@ -373,4 +397,20 @@ a {
 }
 
 /* nav bar */
-@media (max-width:600px) {}
+@media (max-width:600px) {
+    .text-editor-container {
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 10px;
+    }
+    .text-editor-container{
+        height: auto;
+    }
+
+    .share-download-container{
+        display: block;
+    }
+
+    .share-btn{
+        margin-bottom: 20px;
+    }
+}

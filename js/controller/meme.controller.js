@@ -10,7 +10,7 @@ function renderMeme() {
     const meme = getGMeme();
     const img = new Image();
     const imgs = getGimgs();
-    img.src = imgs[+meme.selectedImgId-1].url;
+    img.src = imgs[+meme.selectedImgId - 1].url;
     img.onload = () => {
         gElCanvas.height = (gElCanvas.width * img.naturalHeight) / img.naturalWidth;
         gCtx.beginPath()
@@ -45,7 +45,7 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
     let diff = 0;
     if (align === 'left') diff = -size;
     if (align === 'right') diff = +size;
-    gCtx.font = `${size}px Arial`;
+    gCtx.font = `${size}px impacted`;
     gCtx.fillText(text, x + diff, y);
     gCtx.strokeText(text, x + diff, y);
     gCtx.closePath();
@@ -106,13 +106,16 @@ function onSaveMeme() {
     saveMeme(gElCanvas.toDataURL('image/jpeg'));
     renderMeme()
 }
+// window.addEventListener('resize', () => {
+//     resizeCanvas()
+//     renderMeme()
+// })
 
-
-function resizeCanvas() {
-    const elContainer = document.querySelector('.canvas-container')
-    gElCanvas.width = elContainer.offsetWidth
-    gElCanvas.height = elContainer.offsetHeight
-}
+// function resizeCanvas() {
+//     const elContainer = document.querySelector('.canvas-container')
+//     gElCanvas.width = elContainer.offsetWidth
+//     gElCanvas.height = elContainer.offsetHeight
+// }
 
 
 function downloadImg(elLink) {
@@ -287,9 +290,9 @@ function createBox(line) {
 
     gCtx.beginPath();
     gCtx.roundRect(coords.left, coords.top, metrics.width + 2 * line.size, actualHeight + line.size, [40]);
-    gCtx.setLineDash([5, 3])
-    gCtx.strokeStyle = 'black'
-    gCtx.fillStyle = 'grey'
+    gCtx.lineWidth = '2px'
+    gCtx.strokeStyle = '#ffffff'
+    gCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
     gCtx.stroke();
     gCtx.fill();
     drawText(line.txt, line.size, line.color, line.x, line.y, line.color, line.align)
@@ -318,7 +321,6 @@ function onMove(ev) {
 }
 
 function onAddTextInline(ev) {
-    ev.stopPropagation()
     var key = ev.key;
     if (key === 'ArrowLeft') {
         return clickedText.idx--
@@ -407,7 +409,7 @@ function charPosition() {
 
 function onAddLine() {
     const text = document.querySelector('.txt-input').value;
-    if(!text.trim()) return;
+    if (!text.trim()) return;
     addLine({
         txt: document.querySelector('.txt-input').value,
         size: 20,
