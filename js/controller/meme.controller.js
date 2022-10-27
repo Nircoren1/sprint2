@@ -62,6 +62,12 @@ function onColorChange(color) {
     renderMeme();
 }
 
+function onStrokeColorChange(color) {
+    setStrokeColor(color)
+    renderMeme();
+
+}
+
 function onFontSizeChange(val) {
     setFontSize(+val);
     renderMeme();
@@ -105,8 +111,8 @@ function onImgInput(ev) {
 function loadImageFromInput(ev, onImageReady) {
     const reader = new FileReader()
     reader.onload = function (event) {
-        let img = new Image() 
-        img.src = event.target.result 
+        let img = new Image()
+        img.src = event.target.result
         img.onload = onImageReady.bind(null, img)
     }
     reader.readAsDataURL(ev.target.files[0])
@@ -155,6 +161,7 @@ function addLine(newLine = {
     size: 40,
     align: 'center',
     color: 'white',
+    'stroke-color': 'black',
     x: gElCanvas.width / 2
 }) {
     const memeLines = getGMeme().lines.length;
@@ -293,7 +300,6 @@ function onUp() {
     document.removeEventListener('keydown', onAddTextInline, false);
     if (!gDragged && gIsTextGrabbed && clickedText) {
         charPosition();
-        console.log('idx up', clickedText.idx);
         document.addEventListener('keydown', onAddTextInline, false);
     }
 
@@ -316,7 +322,6 @@ function charPosition() {
         const charSize = gCtx.measureText(text[i]).width;
         i++;
         clickPos.x -= charSize;
-        if (i > 40) console.log('stackoverloasd');
     }
     gCtx.closePath();
     clickedText.idx = i;
@@ -355,7 +360,6 @@ function setCursor(ev) {
         const textCoords = findCoords(line, 'text')
         if (pos.x > textCoords.left && pos.x < textCoords.right && pos.y > textCoords.top && pos.y < textCoords.bottom) {
             document.querySelector('.canvas-container').style.cursor = 'text';
-            console.log('text');
             return true;
         } else if (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom) {
             document.querySelector('.canvas-container').style.cursor = 'grab';
@@ -365,9 +369,39 @@ function setCursor(ev) {
     if (!overLine) {
         document.querySelector('.canvas-container').style.cursor = 'default';
     }
-    console.log(overLine);
 }
 
 function openColorPicker() {
     document.querySelector('.color-input').click();
+}
+
+
+var input = document.querySelector("#file-input");
+document.querySelector(".get-img-btn").addEventListener("click", function () {
+    input.click();
+});
+
+input.addEventListener("change", preview);
+function preview() {
+    var fileObject = this.files[0];
+    var fileReader = new FileReader();
+    fileReader.readAsDataURL(fileObject);
+    fileReader.onload = function () {
+        var result = fileReader.result;
+        const renderdimg = new Image();
+        renderdimg.setAttribute("src", result);
+        const idx = getGimgs().length + 1
+        pushImg({ id: idx, url: result })
+        setSelectedImg(idx)
+        renderdimg.onload = () => {
+            gCtx.beginPath()
+            gCtx.drawImage(renderdimg, 0, 0, gElCanvas.width, gElCanvas.height)
+        }
+    }
+}
+
+
+function onMoveTextVertically(val){
+    setTextHeight(val)
+    renderMeme()
 }

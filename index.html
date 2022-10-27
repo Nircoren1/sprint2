@@ -11,7 +11,6 @@
 </head>
 
 <body onload="onInit()">
-
     <header>
         <div class="logo-container">
             <img src="./assets/logo/logo.png" class="logo" alt="">
@@ -50,6 +49,10 @@
             </div>
 
             <div class="add-switch-remove-container">
+                <button class="vert-btn" value="-40" onclick="onMoveTextVertically(this.value)"><img src="./assets/icons/up.png"
+                        alt=""></button>
+                <button class="vert-btn" value="+40" onclick="onMoveTextVertically(this.value)"><img src="./assets/icons/down.png"
+                        alt=""></button>
                 <button class="switch-btn" onclick="onSwitchLine()"><img src="./assets/icons/switch-icon.png"
                         alt=""></button>
                 <button class="add-line" onclick="onAddLine()"><img src="./assets/icons/plus-icon.png" alt=""></button>
@@ -65,11 +68,12 @@
                 <button onclick="onAlign('center')"><img src="./assets/icons/text-align-center.svg" alt=""></button>
                 <button onclick="onAlign('right')"><img src="./assets/icons/text-align-right.svg"></button>
                 <div>
-                    <!-- <button class="color-btn" onclick="openColorPicker()">change color</button> -->
-                    <input style="width:50px; height:50px; border-radius:10px;" type="color" name="" id=""
-                        class="color-input" value="white" oninput="onColorChange(this.value)">
-                </div>
+                    <input type="color" name="" id=""
+                        class="color-input" value="#ffffff" oninput="onColorChange(this.value)">
 
+                </div>
+                <input type="color" name="" id=""
+                    class="color-input" value="white" oninput="onStrokeColorChange(this.value)">
                 <button onclick="onFlexible()"><img src="./assets/icons/dice.png" alt=""></button>
                 <button onclick="onSaveMeme()"><img src="./assets/icons/save-icon.png" alt=""></button>
             </div>
@@ -92,6 +96,9 @@
                         <span>Download</span>
                     </a>
                 </div>
+                <input type='file' id='file-input' hidden>
+                <button class="get-img-btn">Upload</button>
+
             </div>
     </section>
     <section class="saved-memes gallery hide"></section>

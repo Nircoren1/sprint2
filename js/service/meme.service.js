@@ -15,15 +15,15 @@ var gImgs = [
     { id: 13, url: 'assets/meme-imgs-square/13.jpg', keywords: ['funny', 'cat'] },
     { id: 14, url: 'assets/meme-imgs-square/14.jpg', keywords: ['funny', 'cat'] },
     { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/Oprah-You-Get-A.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/X-Everywhere.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 16, url: 'assets/meme-imgs-diverse-shape/Oprah-You-Get-A.jpg', keywords: ['funny', 'cat'] },
+    { id: 17, url: 'assets/meme-imgs-diverse-shape/X-Everywhere.jpg', keywords: ['funny', 'cat'] },
+    { id: 18, url: 'assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny', 'cat'] },
+    { id: 19, url: 'assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny', 'cat'] },
+    { id: 20, url: 'assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump', 'cat'] },
+    { id: 21, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny', 'cat'] },
+    { id: 22, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 23, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 24, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
 
 
 ];
@@ -53,6 +53,15 @@ function setGmeme(meme) {
     gMeme = meme
 }
 
+function setSelectedImg(id){
+    gMeme.selectedImgId = id
+}
+
+function setTextHeight(val){
+    console.log(val);
+    gMeme.lines[gMeme.selectedLineIdx].y += +val
+}
+
 function getGsavedMemes() {
     return gSavedMemes;
 }
@@ -74,6 +83,10 @@ function pushLine(attributes) {
     gMeme.lines.push(attributes);
 }
 
+function pushImg(img){
+    gImgs.push(img);
+}
+
 function setLines(val) {
     gMeme.lines = val;
 }
@@ -84,6 +97,10 @@ function setImg(idx) {
 
 function setColor(color) {
     gMeme.lines[gMeme.selectedLineIdx].color = color;
+}
+
+function setStrokeColor(color) {
+    gMeme.lines[gMeme.selectedLineIdx]['stroke-color'] = color;
 }
 
 function setFontSize(val) {
