@@ -1,29 +1,29 @@
 var gKeywordSearchCountMap = { 'funny': 12, 'cat': 16, 'baby': 2 }
 var gImgs = [
-    { id: 1, url: '../../assets/meme-imgs-square/1.jpg', keywords: ['trump', 'funny'] },
-    { id: 2, url: '../../assets/meme-imgs-square/2.jpg', keywords: ['cute', 'dog'] },
-    { id: 3, url: '../../assets/meme-imgs-square/3.jpg', keywords: ['bed', 'baby', 'dog'] },
-    { id: 4, url: '../../assets/meme-imgs-square/4.jpg', keywords: ['funny', 'cat'] },
-    { id: 5, url: '../../assets/meme-imgs-square/5.jpg', keywords: ['funny', 'cat'] },
-    { id: 6, url: '../../assets/meme-imgs-square/6.jpg', keywords: ['funny', 'cat'] },
-    { id: 7, url: '../../assets/meme-imgs-square/7.jpg', keywords: ['funny', 'cat'] },
-    { id: 8, url: '../../assets/meme-imgs-square/8.jpg', keywords: ['funny', 'cat'] },
-    { id: 9, url: '../../assets/meme-imgs-square/9.jpg', keywords: ['funny', 'cat'] },
-    { id: 10, url: '../../assets/meme-imgs-square/10.jpg', keywords: ['funny', 'cat', 'obama'] },
-    { id: 11, url: '../../assets/meme-imgs-square/11.jpg', keywords: ['funny', 'cat'] },
-    { id: 12, url: '../../assets/meme-imgs-square/12.jpg', keywords: ['funny', 'cat'] },
-    { id: 13, url: '../../assets/meme-imgs-square/13.jpg', keywords: ['funny', 'cat'] },
-    { id: 14, url: '../../assets/meme-imgs-square/14.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/Oprah-You-Get-A.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/X-Everywhere.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 15, url: '../../assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 1, url: 'assets/meme-imgs-square/1.jpg', keywords: ['trump', 'funny'] },
+    { id: 2, url: 'assets/meme-imgs-square/2.jpg', keywords: ['cute', 'dog'] },
+    { id: 3, url: 'assets/meme-imgs-square/3.jpg', keywords: ['bed', 'baby', 'dog'] },
+    { id: 4, url: 'assets/meme-imgs-square/4.jpg', keywords: ['funny', 'cat'] },
+    { id: 5, url: 'assets/meme-imgs-square/5.jpg', keywords: ['funny', 'cat'] },
+    { id: 6, url: 'assets/meme-imgs-square/6.jpg', keywords: ['funny', 'cat'] },
+    { id: 7, url: 'assets/meme-imgs-square/7.jpg', keywords: ['funny', 'cat'] },
+    { id: 8, url: 'assets/meme-imgs-square/8.jpg', keywords: ['funny', 'cat'] },
+    { id: 9, url: 'assets/meme-imgs-square/9.jpg', keywords: ['funny', 'cat'] },
+    { id: 10, url: 'assets/meme-imgs-square/10.jpg', keywords: ['funny', 'cat', 'obama'] },
+    { id: 11, url: 'assets/meme-imgs-square/11.jpg', keywords: ['funny', 'cat'] },
+    { id: 12, url: 'assets/meme-imgs-square/12.jpg', keywords: ['funny', 'cat'] },
+    { id: 13, url: 'assets/meme-imgs-square/13.jpg', keywords: ['funny', 'cat'] },
+    { id: 14, url: 'assets/meme-imgs-square/14.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/Oprah-You-Get-A.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/X-Everywhere.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
 
 
 ];
@@ -39,25 +39,10 @@ var gMeme = {
     selectedImgId: 5,
     selectedLineIdx: -1,
     lines: [
-        // {
-        //     txt: '😜',
-        //     size: 20,
-        //     align: 'left',
-        //     color: 'blue',
-        //     'stroke-color': 'black',
-        //     coords: [0, 0, 0, 0]
-        // },
-        // {
-        //     txt: 'line Dp',
-        //     size: 20,
-        //     align: 'left',
-        //     color: 'blue',
-        //     'stroke-color': 'black'
-        // }
     ]
 }
 
-var gSavedMemes = loadFromStorage('savedMemes') ? loadFromStorage('savedMemes') : []
+var gSavedMemes = loadFromStorage('savedMemes') ? loadFromStorage('savedMemes') : [];
 
 
 function getGMeme() {
@@ -77,20 +62,20 @@ function getGimgs() {
 }
 
 function getKeywords() {
-    return gKeywords
+    return gKeywords;
 }
 
 function setLineTxt(txt) {
     if (gMeme.selectedLineIdx === -1) return
-    gMeme.lines[gMeme.selectedLineIdx].txt = txt
+    gMeme.lines[gMeme.selectedLineIdx].txt = txt;
 }
 
 function pushLine(attributes) {
-    gMeme.lines.push(attributes)
+    gMeme.lines.push(attributes);
 }
 
 function setLines(val) {
-    gMeme.lines = val
+    gMeme.lines = val;
 }
 
 function setImg(idx) {
@@ -98,18 +83,18 @@ function setImg(idx) {
 }
 
 function setColor(color) {
-    gMeme.lines[gMeme.selectedLineIdx].color = color
+    gMeme.lines[gMeme.selectedLineIdx].color = color;
 }
 
 function setFontSize(val) {
-    gMeme.lines[gMeme.selectedLineIdx].size = gMeme.lines[gMeme.selectedLineIdx].size + val
+    gMeme.lines[gMeme.selectedLineIdx].size = gMeme.lines[gMeme.selectedLineIdx].size + val;
 }
 
 function setSwitchedLine() {
     const lines = gMeme.lines
-    let idx = gMeme.selectedLineIdx + 1
-    if (idx >= lines.length) idx = 0
-    gMeme.selectedLineIdx = idx
+    let idx = gMeme.selectedLineIdx + 1;
+    if (idx >= lines.length) idx = 0;
+    gMeme.selectedLineIdx = idx;
 }
 
 
