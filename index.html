@@ -6,14 +6,83 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./style/main.css">
 </head>
 
-<body>
-    <section class="editer">
-        <canvas width="400" height="400" style="outline: 1px solid green"></canvas>
+<body onload="onInit()">
+    <header>
+        <img src="" alt="">
+        <ul>
+            <li>Gallery</li>
+            <li>About</li>
+        </ul>
+    </header>
+    <section class="meme-creator">
+        <div class="canvas-container">
+            <canvas width="400" height="400" style="outline: 1px solid green" class="canvas" onclick=""></canvas>
+        </div>
+        <div class="edit-container">
+            <input type="text" name="" id="" class="txt-input" oninput="onInputChange(this.value)">
+            <div>
+                <button class="add-line" onclick="onAddLine()">add</button>
+                <button class="" onclick="onSwitchLine()">switch</button>
+            </div>
 
+
+            <input type="color" name="" id="" class="color-input" oninput="onColorChange(this.value)">
+            <div class="">
+                <button value="1" class="increase-font" onclick="onFontSizeChange(this.value)">+</button>
+                <button value="-1" class="decrease-font" onclick="onFontSizeChange(this.value)">-</button>
+            </div>
+            <button onclick="onFlexible()">I'm Flexible</button>
+            <button onclick="onSaveMeme()">save</button>
+            <div>
+                <div class="stickers" onclick="onAddEmoji('😜')">😜</div>
+                <div class="stickers" onclick="onAddEmoji('🦁')">🦁</div>
+                <div class="stickers" onclick="onAddEmoji('⌚')">⌚</div>
+            </div>
+
+            <div>
+                <a href="#" class="btn" onclick="downloadImg(this)" download="my-img.jpg">Download as jpeg</a>
+                <button class="btn" onclick="uploadImg()">
+                    Upload Image from Canvas
+                </button>
+                <p class="user-msg"></p>
+            </div>
+
+            <input id="upload" type="file" onChange="handleImageUpload()" />
+            <img id="display-image" src="" />
+
+
+
+
+            <div class="share-container"></div>
+        </div>
+
+        </div>
     </section>
-    <section class="gallery"></section>
+    <section class="gallery-container">
+        <input list="keywords" class="filter-input" oninput="onFilterGallery(this.value)">
+        <div class="keywords-by-popularity"></div>
+        <datalist id="keywords">
+            <option value="cute">
+            <option value="trump">
+            <option value="dog">
+            <option value="Opera">
+            <option value="Safari">
+        </datalist>
+        <div class="gallery"></div>
+    </section>
+    <input class="uploaded-img" type="file" accept="image/*">
+    <img class="img-div" src="" alt="">
+    <section class="saved-memes gallery"></section>
+    <script src="./js/service/storage.service.js"></script>
+    <script src="./js/service/upload.service.js"></script>
+    <script src="./js/service/utils.service.js"></script>
+    <script src="./js/service/meme.service.js"></script>
+    <script src="./js/controller/gallery.controller.js"></script>
+    <script src="./js/controller/meme.controller.js"></script>
+    <script src="./js/main.js"></script>
 </body>
 
 </html>
