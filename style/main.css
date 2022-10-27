@@ -70,8 +70,8 @@ ul {
     display: grid;
     grid-template-columns: 1fr 1fr;
     list-style: none;
-    gap: 42px;
     text-align: center;
+    gap: 20px;
 }
 
 li {
@@ -266,7 +266,7 @@ a {
 }
 
 .add-switch-remove-container >*{
-    justify-self: center;
+    align-self: center;
 }
 
 .switch-btn {
@@ -451,5 +451,9 @@ a {
     .add-switch-remove-container {
         grid-template-columns: 1fr 1fr 1fr;
         gap: 20px;
+    }
+
+    header{
+        padding: 0 10px 0 10px;
     }
 }
