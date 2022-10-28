@@ -18,7 +18,6 @@ function renderMeme() {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
 
         meme.lines.forEach((line, idx) => {
-            drawBox(line);
             drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
             if (meme.selectedLineIdx === idx) {
                 drawBox(line);
