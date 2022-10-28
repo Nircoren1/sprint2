@@ -23,7 +23,7 @@ function renderMeme() {
                 drawBox(line);
             }
         })
-        
+
     }
 }
 
@@ -48,7 +48,7 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
     gCtx.font = `${size}px impacted`;
     gCtx.fillText(text, x + diff, y);
     gCtx.strokeText(text, x + diff, y);
-    
+
 }
 
 function onInputChange(txt) {
@@ -249,16 +249,37 @@ function drawBox(line) {
     const coords = findCoords(line)
     let metrics = gCtx.measureText(line.txt);
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+
+    //draw box
     gCtx.beginPath();
     gCtx.roundRect(coords.left, coords.top, metrics.width + 2 * line.size, actualHeight + line.size, [40]);
     gCtx.lineWidth = '2px';
     gCtx.strokeStyle = '#ffffff';
-    gCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    gCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     gCtx.stroke();
     gCtx.fill();
+
+    // draw move symbol
+    gCtx.beginPath();
+    gCtx.beginPath()
+    gCtx.arc(coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
+    gCtx.fillStyle = 'rgba(235, 238, 243,1)'
+    gCtx.fill()
+
+    gCtx.beginPath()
+    gCtx.lineWidth = 1;
+    gCtx.fillStyle = 'rgba(34, 37, 44,0.76)';
+    gCtx.font = `${line.size / 1.5}px impacted`;
+    gCtx.fillText('✥', coords.left + metrics.width + 2 * line.size, line.size /4.7 + coords.top + (actualHeight + line.size) / 2);
     drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
 
-    
+    // draw resize:
+    // gCtx.beginPath();
+    // gCtx.beginPath()
+    // gCtx.arc(coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
+    // gCtx.fillStyle = 'rgba(235, 238, 243,1)'
+    // gCtx.fill()
+
 }
 
 let gDragged = false
@@ -320,7 +341,7 @@ function charPosition() {
         i++;
         clickPos.x -= charSize;
     }
-    
+
     clickedText.idx = i;
     return i;
 }
@@ -398,7 +419,7 @@ function preview() {
 }
 
 
-function onMoveTextVertically(val){
+function onMoveTextVertically(val) {
     setTextHeight(val)
     renderMeme()
 }
