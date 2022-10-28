@@ -266,7 +266,7 @@ a {
 }
 
 .add-switch-remove-container>* {
-    align-self: center;
+    justify-self: center;
 }
 
 .switch-btn {

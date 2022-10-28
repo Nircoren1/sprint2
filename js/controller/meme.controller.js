@@ -18,13 +18,13 @@ function renderMeme() {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
 
         meme.lines.forEach((line, idx) => {
+            drawBox(line);
             drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
             if (meme.selectedLineIdx === idx) {
-                createBox(line);
-
+                drawBox(line);
             }
         })
-        gCtx.closePath();
+        
     }
 }
 
@@ -49,7 +49,7 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
     gCtx.font = `${size}px impacted`;
     gCtx.fillText(text, x + diff, y);
     gCtx.strokeText(text, x + diff, y);
-    gCtx.closePath();
+    
 }
 
 function onInputChange(txt) {
@@ -100,7 +100,7 @@ function onSaveMeme() {
 }
 
 function downloadImg(elLink) {
-    const imgContent = gElCanvas.toDataURL('image/jpeg')// image/jpeg the default format
+    const imgContent = gElCanvas.toDataURL('image/jpeg')
     elLink.href = imgContent
 }
 
@@ -209,7 +209,6 @@ function getEvPos(ev) {
         ev.preventDefault();
 
         ev = ev.changedTouches[0];
-        //Calc the right pos according to the touch screen
         pos = {
             x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
             y: ev.pageY - ev.target.offsetTop - ev.target.clientTop
@@ -247,8 +246,7 @@ function onDown(ev) {
     renderMeme();
 }
 
-//changes
-function createBox(line) {
+function drawBox(line) {
     const coords = findCoords(line)
     let metrics = gCtx.measureText(line.txt);
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
@@ -259,9 +257,9 @@ function createBox(line) {
     gCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
     gCtx.stroke();
     gCtx.fill();
-    drawText(line.txt, line.size, line.color, line.x, line.y, line.color, line.align);
+    drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
 
-    gCtx.closePath();
+    
 }
 
 let gDragged = false
@@ -323,7 +321,7 @@ function charPosition() {
         i++;
         clickPos.x -= charSize;
     }
-    gCtx.closePath();
+    
     clickedText.idx = i;
     return i;
 }
