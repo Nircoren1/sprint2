@@ -13,6 +13,13 @@
 </head>
 
 <body onload="onInit()">
+    <div>
+        <div class="user-msg"></div>
+        <div class="share-container"></div>
+    </div>
+    <p><button>Share MDN!</button></p>
+    <p class="result"></p>
+
     <header>
         <div class="logo-container">
             <img src="./assets/logo/logo.png" class="logo" alt="">
@@ -91,7 +98,7 @@
             </div>
 
             <div class="share-download-container">
-                <button class="share-btn" onclick="uploadImg()">
+                <button class="share-btn" onclick="onShareCanvas()">
                     <img src="./assets/icons/share.svg" alt="">
                     <span>Share</span>
                 </button>

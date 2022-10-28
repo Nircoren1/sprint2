@@ -183,7 +183,7 @@ function findCoords(line, type = 'rect') {
 function addListeners() {
     addMouseListeners();
     addTouchListeners();
-    input.addEventListener("change", uploadImg);
+    // document.querySelector('.share-btn').addEventListener("change", uploadImg);
 }
 
 function addMouseListeners() {
@@ -424,3 +424,30 @@ function onMoveTextVertically(val) {
     setTextHeight(val)
     renderMeme()
 }
+
+
+
+const shareData = {
+    title: 'MDN',
+    text: 'Learn web development on MDN!',
+    url: 'http://ca-upload.com/here/serveForShare.php?id=635b9c6de3f7f'
+}
+
+const btn = document.querySelector('button');
+const resultPara = document.querySelector('.result');
+
+// Share must be triggered by "user activation"
+// btn.addEventListener('click', async () => {
+//     const shareData = {
+//         title: 'MDN',
+//         text: 'Learn web development on MDN!',
+//         url: 'http://ca-upload.com/here/serveForShare.php?id=635b9c6de3f7f'
+//     }
+
+//     try {
+//         await navigator.share(shareData);
+//         resultPara.textContent = 'MDN shared successfully';
+//     } catch (err) {
+//         resultPara.textContent = `Error: ${err}`;
+//     }
+// });
