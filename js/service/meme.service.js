@@ -53,12 +53,16 @@ function setGmeme(meme) {
     gMeme = meme
 }
 
-function setSelectedImg(id){
+function setSelectedImg(id) {
     gMeme.selectedImgId = id
 }
 
-function setTextHeight(val){
-    gMeme.lines[gMeme.selectedLineIdx].y += +val
+function setTextHeight(val) {
+    gMeme.lines[gMeme.selectedLineIdx].y += +val;
+}
+
+function setTextSize(val) {
+    gMeme.lines[gMeme.selectedLineIdx].size += +val;
 }
 
 function getGsavedMemes() {
@@ -73,6 +77,10 @@ function getKeywords() {
     return gKeywords;
 }
 
+function getTextSize() {
+    return gMeme.lines[gMeme.selectedLineIdx].size
+}
+
 function setLineTxt(txt) {
     if (gMeme.selectedLineIdx === -1) return
     gMeme.lines[gMeme.selectedLineIdx].txt = txt;
@@ -82,7 +90,7 @@ function pushLine(attributes) {
     gMeme.lines.push(attributes);
 }
 
-function pushImg(img){
+function pushImg(img) {
     gImgs.push(img);
 }
 
@@ -153,9 +161,9 @@ function alignText(dir) {
 
 function updateText(key, idx) {
     const lineText = gMeme.lines[gMeme.selectedLineIdx].txt;
-    if (key === 'Backspace')  {
+    if (key === 'Backspace') {
         gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, -1)
-        if(!gMeme.lines[gMeme.selectedLineIdx].txt)  gMeme.lines.splice(gMeme.selectedLineIdx,1)
+        if (!gMeme.lines[gMeme.selectedLineIdx].txt) gMeme.lines.splice(gMeme.selectedLineIdx, 1)
         return;
     };
     gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, idx) + key + lineText.slice(idx);

@@ -184,7 +184,6 @@ a {
 
 ::-webkit-scrollbar {
     width: 13px;
-
 }
 
 /* Track */
@@ -198,7 +197,6 @@ a {
     width: 13px;
     height: 57px;
     border-radius: 7px;
-
 }
 
 /* Handle on hover */
@@ -342,8 +340,18 @@ a {
     font-size: 2rem;
     padding: 10px;
     margin-bottom: 25px;
+    margin-inline:auto;
+    max-width: 400px;
+    max-height: 70px;
     text-align: center;
+    /* overflow-x: scroll;
+    overflow-y: hidden; */
 }
+/* 
+.emoji-container::-webkit-scrollbar{
+    height: 13px;
+    border-radius: 7px;
+} */
 
 .share-download-container {
     display: grid;
@@ -468,7 +476,7 @@ a {
     margin: auto;
 }
 
-.color-input{
+.color-input {
     top: 0;
     left: 0;
     bottom: 0;

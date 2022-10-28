@@ -7,6 +7,24 @@ let gIsTextGrabbed = false;
 let clickedTextF;
 var gStartPos;
 
+function addListeners() {
+    addMouseListeners();
+    addTouchListeners();
+    // document.querySelector('.share-btn').addEventListener("change", uploadImg);
+}
+
+function addMouseListeners() {
+    gElCanvas.addEventListener('mousemove', onMove);
+    gElCanvas.addEventListener('mousedown', onDown);
+    gElCanvas.addEventListener('mouseup', onUp);
+}
+
+function addTouchListeners() {
+    gElCanvas.addEventListener('touchmove', onMove);
+    gElCanvas.addEventListener('touchstart', onDown);
+    gElCanvas.addEventListener('touchend', onUp);
+}
+
 function renderMeme() {
     const meme = getGMeme();
     const img = new Image();
@@ -46,6 +64,8 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
     gCtx.font = `${size}px impacted`;
     gCtx.fillText(text, x + diff, y);
     gCtx.strokeText(text, x + diff, y);
+    gCtx.rotate(45 * Math.PI / 180);
+    gCtx.closePath()
 }
 
 function onInputChange(txt) {
@@ -77,7 +97,7 @@ function onFlexible() {
     setLines([])
     setSelectedLine(-1)
     setImg(getRandomIntInclusive(1, getGimgs().length))
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 1; i++) {
         addLine({
             txt: randStr().trim(),
             size: getRandomIntInclusive(20, 60),
@@ -172,30 +192,28 @@ function findCoords(line, type = 'rect') {
     let metrics = gCtx.measureText(line.txt);
     let width = metrics.width;
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-    if (type === 'rect') {
-        return { left: line.x - width / 2 - line.size, right: line.x + width / 2 + line.size, top: line.y - actualHeight - 0.5 * line.size, bottom: line.y + line.size }
+    const textStartX = line.x - width / 2;
+    const textEnd = line.x + width / 2;
+    let rad;
+    if (type === 'text') {
+        return { left: textStartX, right: textEnd, top: line.y - actualHeight, bottom: line.y }
+    }
+    else if (type === 'rect') {
+        return { left: textStartX - line.size, right: textEnd + line.size, top: line.y - actualHeight - 0.5 * line.size, bottom: line.y + line.size }
+    } else if (type === 'rotate') {
+        rad = 10
+        return { left: line.x - rad, right: line.x + rad, top: line.y + 0.5 * line.size - rad, bottom: line.y + 0.5 * line.size + rad }
     }
     else {
-        return { left: line.x - width / 2, right: line.x + width / 2, top: line.y - actualHeight, bottom: line.y }
+        rad = 20
+        const arcCenterX = textEnd + line.size;
+        const arcCenterY = line.y + 0.5 * line.size;
+        return {
+            left: arcCenterX - rad, right: textEnd + line.size + rad,
+            top: arcCenterY - rad, bottom: arcCenterY + rad
+        }
     }
-}
 
-function addListeners() {
-    addMouseListeners();
-    addTouchListeners();
-    // document.querySelector('.share-btn').addEventListener("change", uploadImg);
-}
-
-function addMouseListeners() {
-    gElCanvas.addEventListener('mousemove', onMove);
-    gElCanvas.addEventListener('mousedown', onDown);
-    gElCanvas.addEventListener('mouseup', onUp);
-}
-
-function addTouchListeners() {
-    gElCanvas.addEventListener('touchmove', onMove);
-    gElCanvas.addEventListener('touchstart', onDown);
-    gElCanvas.addEventListener('touchend', onUp);
 }
 
 function getEvPos(ev) {
@@ -215,6 +233,8 @@ function getEvPos(ev) {
     return pos
 }
 
+let gResize = false
+let gRotate
 function onDown(ev) {
     const meme = getGMeme();
     const pos = getEvPos(ev);
@@ -222,20 +242,29 @@ function onDown(ev) {
     const idx = meme.lines.findIndex(line => {
         const boxCoords = findCoords(line);
         const textCoords = findCoords(line, 'text');
+        const resizeCoords = findCoords(line, 'resize');
+        const rotateCoords = findCoords(line, 'rotate');
         if (pos.x > textCoords.left && pos.x < textCoords.right && pos.y > textCoords.top && pos.y < textCoords.bottom) {
             clickedText = {};
             clickedText.clickPos = pos;
             clickedText.textCoords = textCoords;
             return true;
+        } else if (pos.x > resizeCoords.left && pos.x < resizeCoords.right && pos.y > resizeCoords.top && pos.y < resizeCoords.bottom) {
+            return gResize = true;
+            // gCtx.arc(line.x, line.y + 0.5 * line.size, rad, 0, 2 * Math.PI);
+        } else if (pos.x > rotateCoords.left && pos.x < rotateCoords.right && pos.y > rotateCoords.top && pos.y < rotateCoords.bottom) {
+            return rotate = true;
         }
-        return (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom);
+        else {
+            return (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom);
+        }
     })
     if (idx === -1) {
         setSelectedLine(-1);
         renderMeme();
         return;
     }
-    gIsTextGrabbed = true;
+    gIsTextGrabbed = true
     document.body.style.cursor = 'grabbing';
     gStartPos = { x: pos.x, y: pos.y };
     setSelectedLine(idx);
@@ -248,10 +277,10 @@ function drawBox(line) {
     const coords = findCoords(line)
     let metrics = gCtx.measureText(line.txt);
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-
+    const width = metrics.width
     //draw box
     gCtx.beginPath();
-    gCtx.roundRect(coords.left, coords.top, metrics.width + 2 * line.size, actualHeight + line.size, [40]);
+    gCtx.rect(coords.left, coords.top, width + 2 * line.size, actualHeight + line.size);//[40]
     gCtx.lineWidth = '2px';
     gCtx.strokeStyle = '#ffffff';
     gCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
@@ -260,31 +289,42 @@ function drawBox(line) {
 
     // draw move symbol
     gCtx.beginPath();
-    gCtx.arc(coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
+    const textEnd = line.x + width / 2
+    gCtx.arc(coords.left + width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
     gCtx.fillStyle = 'rgba(235, 238, 243,1)'
     gCtx.fill()
 
+    //icon
     gCtx.beginPath()
     gCtx.lineWidth = 1;
     gCtx.fillStyle = 'rgba(34, 37, 44,0.76)';
     gCtx.font = `${line.size / 1.5}px impacted`;
-    gCtx.fillText('✥', coords.left + metrics.width + 2 * line.size, line.size / 4.8 + coords.top + (actualHeight + line.size) / 2);
+    gCtx.fillText('✥', coords.left + width + 2 * line.size, line.size / 4.8 + coords.top + (actualHeight + line.size) / 2);
     drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
 
     // draw resize:
+    // circle:
     gCtx.beginPath();
-    gCtx.arc(coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) - line.size / 7, line.size / 7, 0, 2 * Math.PI);
+    const rad = 6
+    gCtx.arc(textEnd + line.size, line.y + 0.5 * line.size, rad, 0, 2 * Math.PI);//[40]
     gCtx.fillStyle = 'rgba(235, 238, 243,1)'
     gCtx.fill()
 
+    //draw rotate
+    //circle:
     gCtx.beginPath();
+    gCtx.arc(line.x, line.y + 0.5 * line.size, rad, 0, 2 * Math.PI);
+    gCtx.fillStyle = 'rgba(235, 238, 243,1)'
+    gCtx.fill()
+
+    //icon
+    gCtx.beginPath()
     gCtx.lineWidth = 1;
     gCtx.fillStyle = 'rgba(34, 37, 44,0.76)';
-    gCtx.font = `${line.size / 5}px impacted`;
-    gCtx.fillText('↘', coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) - line.size / 7, line.size / 7);
+    gCtx.font = `${10}px impacted`;
+    gCtx.fillText('↺', line.x, line.y + 0.5 * line.size + 0.4 * rad);
     drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
-
-
+    // U+021BA
 
 }
 
@@ -297,7 +337,20 @@ function onMove(ev) {
     const pos = getEvPos(ev);
     const dx = pos.x - gStartPos.x;
     const dy = pos.y - gStartPos.y;
-    moveText(dx, dy)
+
+    if (gResize) {
+        const distance = (((pos.x - gStartPos.x) ** 2 + (pos.y - gStartPos.y) ** 2) * 0.5) / 6;
+        const isGrow = pos.x >= gStartPos.x && pos.y >= gStartPos.y ? distance : - distance;
+        const textSize = getTextSize()
+        if ((textSize <= 20 && isGrow < 0) || (textSize > 70 && isGrow > 0)) return;
+        setTextSize(isGrow);
+    } else if(gRotate){
+
+    }
+    else {
+        moveText(dx, dy)
+
+    }
     gStartPos = pos;
     renderMeme();
 }
@@ -327,6 +380,7 @@ function onUp() {
 
     gIsTextGrabbed = false;
     gDragged = false;
+    gResize = false
     document.body.style.cursor = 'auto';
 }
 
@@ -379,10 +433,16 @@ function setCursor(ev) {
     const overLine = meme.lines.find(line => {
         const boxCoords = findCoords(line);
         const textCoords = findCoords(line, 'text')
+        const resizeCoords = findCoords(line, 'resize');
+        const rotate = findCoords(line, 'rotate');
         if (pos.x > textCoords.left && pos.x < textCoords.right && pos.y > textCoords.top && pos.y < textCoords.bottom) {
             document.querySelector('.canvas-container').style.cursor = 'text';
             return true;
-        } else if (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom) {
+        } else if (pos.x > resizeCoords.left && pos.x < resizeCoords.right && pos.y > resizeCoords.top && pos.y < resizeCoords.bottom) {
+            document.querySelector('.canvas-container').style.cursor = 'nw-resize';
+            return true
+        }
+        else if (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom) {
             document.querySelector('.canvas-container').style.cursor = 'grab';
             return true
         }
