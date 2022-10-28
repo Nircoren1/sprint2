@@ -39,11 +39,11 @@ function showGallery(el) {
 
 }
 
-function showSavedMemes(el) {
+function showSavedMemes() {
     document.querySelector('.meme-creator').classList.add('hide');
     document.querySelector('.gallery-container').classList.add('hide');
     document.querySelector('.saved-memes').classList.remove('hide');
     document.querySelector('.gallery-link').classList.remove('active');
-    el.classList.add('active');
+    document.querySelector('.memes-link').classList.add('active');
     renderSavedMemes();
 }

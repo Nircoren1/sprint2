@@ -16,14 +16,12 @@ function renderMeme() {
         gElCanvas.height = (gElCanvas.width * img.naturalHeight) / img.naturalWidth;
         gCtx.beginPath()
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
-
         meme.lines.forEach((line, idx) => {
             drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
             if (meme.selectedLineIdx === idx) {
                 drawBox(line);
             }
         })
-
     }
 }
 
@@ -48,7 +46,6 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
     gCtx.font = `${size}px impacted`;
     gCtx.fillText(text, x + diff, y);
     gCtx.strokeText(text, x + diff, y);
-
 }
 
 function onInputChange(txt) {
@@ -64,7 +61,6 @@ function onColorChange(color) {
 function onStrokeColorChange(color) {
     setStrokeColor(color)
     renderMeme();
-
 }
 
 function onFontSizeChange(val) {
@@ -75,26 +71,28 @@ function onFontSizeChange(val) {
 function onSwitchLine() {
     setSwitchedLine()
     renderMeme()
-
 }
 
 function onFlexible() {
     setLines([])
     setSelectedLine(-1)
     setImg(getRandomIntInclusive(1, getGimgs().length))
-    addLine({
-        txt: randStr().trim(),
-        size: getRandomIntInclusive(20, 60),
-        align: 'center',
-        color: getRandomColor(),
-        'stroke-color': getRandomColor(),
-        x: gElCanvas.width / 2
-    })
+    for (let i = 0; i < 2; i++) {
+        addLine({
+            txt: randStr().trim(),
+            size: getRandomIntInclusive(20, 60),
+            align: 'center',
+            color: getRandomColor(),
+            'stroke-color': getRandomColor(),
+            x: gElCanvas.width / 2
+        })
+    }
     renderMeme();
 }
 
 function onSaveMeme() {
     saveMeme(gElCanvas.toDataURL('image/jpeg'));
+    showSavedMemes()
     renderMeme()
 }
 
@@ -185,6 +183,7 @@ function findCoords(line, type = 'rect') {
 function addListeners() {
     addMouseListeners();
     addTouchListeners();
+    input.addEventListener("change", uploadImg);
 }
 
 function addMouseListeners() {
@@ -216,8 +215,6 @@ function getEvPos(ev) {
     return pos
 }
 
-
-
 function onDown(ev) {
     const meme = getGMeme();
     const pos = getEvPos(ev);
@@ -242,6 +239,8 @@ function onDown(ev) {
     document.body.style.cursor = 'grabbing';
     gStartPos = { x: pos.x, y: pos.y };
     setSelectedLine(idx);
+    document.querySelector('.txt-input').value = meme.lines[idx].txt
+
     renderMeme();
 }
 
@@ -261,7 +260,6 @@ function drawBox(line) {
 
     // draw move symbol
     gCtx.beginPath();
-    gCtx.beginPath()
     gCtx.arc(coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
     gCtx.fillStyle = 'rgba(235, 238, 243,1)'
     gCtx.fill()
@@ -270,15 +268,23 @@ function drawBox(line) {
     gCtx.lineWidth = 1;
     gCtx.fillStyle = 'rgba(34, 37, 44,0.76)';
     gCtx.font = `${line.size / 1.5}px impacted`;
-    gCtx.fillText('✥', coords.left + metrics.width + 2 * line.size, line.size /4.7 + coords.top + (actualHeight + line.size) / 2);
+    gCtx.fillText('✥', coords.left + metrics.width + 2 * line.size, line.size / 4.8 + coords.top + (actualHeight + line.size) / 2);
     drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
 
     // draw resize:
-    // gCtx.beginPath();
-    // gCtx.beginPath()
-    // gCtx.arc(coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
-    // gCtx.fillStyle = 'rgba(235, 238, 243,1)'
-    // gCtx.fill()
+    gCtx.beginPath();
+    gCtx.arc(coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) - line.size / 7, line.size / 7, 0, 2 * Math.PI);
+    gCtx.fillStyle = 'rgba(235, 238, 243,1)'
+    gCtx.fill()
+
+    gCtx.beginPath();
+    gCtx.lineWidth = 1;
+    gCtx.fillStyle = 'rgba(34, 37, 44,0.76)';
+    gCtx.font = `${line.size / 5}px impacted`;
+    gCtx.fillText('↘', coords.left + metrics.width + 2 * line.size, coords.top + (actualHeight + line.size) - line.size / 7, line.size / 7);
+    drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
+
+
 
 }
 
@@ -312,8 +318,6 @@ function onAddTextInline(ev) {
 
 }
 
-
-
 function onUp() {
     document.removeEventListener('keydown', onAddTextInline, false);
     if (!gDragged && gIsTextGrabbed && clickedText) {
@@ -341,7 +345,6 @@ function charPosition() {
         i++;
         clickPos.x -= charSize;
     }
-
     clickedText.idx = i;
     return i;
 }
@@ -393,14 +396,12 @@ function openColorPicker() {
     document.querySelector('.color-input').click();
 }
 
-
 var input = document.querySelector("#file-input");
 document.querySelector(".get-img-btn").addEventListener("click", function () {
     input.click();
 });
 
-input.addEventListener("change", preview);
-function preview() {
+function uploadImg() {
     var fileObject = this.files[0];
     var fileReader = new FileReader();
     fileReader.readAsDataURL(fileObject);
@@ -413,11 +414,11 @@ function preview() {
         setSelectedImg(idx)
         renderdimg.onload = () => {
             gCtx.beginPath()
-            gCtx.drawImage(renderdimg, 0, 0, gElCanvas.width, gElCanvas.height)
+            gCtx.drawImage(renderdimg, 0, 0, gElCanvas.width, gElCanvas.height);
+            renderMeme()
         }
     }
 }
-
 
 function onMoveTextVertically(val) {
     setTextHeight(val)

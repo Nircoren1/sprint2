@@ -51,10 +51,10 @@
             </div>
 
             <div class="add-switch-remove-container">
-                <button class="vert-btn" value="-40" onclick="onMoveTextVertically(this.value)"><img src="./assets/icons/up.png"
-                        alt=""></button>
-                <button class="vert-btn" value="+40" onclick="onMoveTextVertically(this.value)"><img src="./assets/icons/down.png"
-                        alt=""></button>
+                <button class="vert-btn" value="-40" onclick="onMoveTextVertically(this.value)"><img
+                        src="./assets/icons/up.png" alt=""></button>
+                <button class="vert-btn" value="+40" onclick="onMoveTextVertically(this.value)"><img
+                        src="./assets/icons/down.png" alt=""></button>
                 <button class="switch-btn" onclick="onSwitchLine()"><img src="./assets/icons/switch-icon.png"
                         alt=""></button>
                 <button class="add-line" onclick="onAddLine()"><img src="./assets/icons/plus-icon.png" alt=""></button>
@@ -69,13 +69,16 @@
                 <button onclick="onAlign('left')"><img src="./assets/icons/text-align-left.svg" alt=""></button>
                 <button onclick="onAlign('center')"><img src="./assets/icons/text-align-center.svg" alt=""></button>
                 <button onclick="onAlign('right')"><img src="./assets/icons/text-align-right.svg"></button>
-                <div>
-                    <input type="color" name="" id=""
-                        class="color-input" value="#ffffff" oninput="onColorChange(this.value)">
+                <button class="color-btn">
+                    <img src="./assets/icons/color-pallete-icon.png" alt="">
+                    <input class="color-input" type="color" name="farbe" id="farbe" oninput="onColorChange(this.value)">
+                </button>
+                <button class="color-btn">
+                    <img src="./assets/icons/stroke-color-icon.png" alt="">
+                    <input type="color" name="" id="" class="color-input" value="white"
+                        oninput="onStrokeColorChange(this.value)">
+                </button>
 
-                </div>
-                <input type="color" name="" id=""
-                    class="color-input" value="white" oninput="onStrokeColorChange(this.value)">
                 <button onclick="onFlexible()"><img src="./assets/icons/dice.png" alt=""></button>
                 <button onclick="onSaveMeme()"><img src="./assets/icons/save-icon.png" alt=""></button>
             </div>
