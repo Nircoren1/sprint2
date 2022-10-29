@@ -172,7 +172,7 @@ function updateText(key, idx) {
 }
 
 function setDeg(deg) {
-    typeof gMeme.lines[gMeme.selectedLineIdx].deg === 'number' ? gMeme.lines[gMeme.selectedLineIdx].deg += deg / 2 : gMeme.lines[gMeme.selectedLineIdx].deg = 0
+    typeof gMeme.lines[gMeme.selectedLineIdx].deg === 'number' ? gMeme.lines[gMeme.selectedLineIdx].deg += deg / 7: gMeme.lines[gMeme.selectedLineIdx].deg = 0
 }
 
 function setFont(value){
