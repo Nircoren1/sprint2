@@ -446,7 +446,7 @@ body.rtl .filter-input-container img {
 .share-download-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 4px;
+    gap: 5px;
     margin-bottom: 5px;
 }
 

@@ -78,7 +78,7 @@ function renderMeme(flexible = false, savedMeme = false) {
             if (meme.selectedLineIdx === idx && !savedMeme) {
                 drawBox(line);
             }
-            drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align, line.deg,line.font);
+            drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align, line.deg, line.font);
 
         })
         if (savedMeme) {
@@ -105,7 +105,7 @@ function toggleNavbar() {
     document.querySelector('body').classList.toggle('open-menu');
 }
 
-function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', align, deg,font) {
+function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', align, deg, font) {
     gCtx.beginPath()
     gCtx.lineWidth = 1;
     gCtx.strokeStyle = strokeColor;
@@ -172,7 +172,7 @@ function addFlexibleLines() {
             color: getRandomColor(),
             'stroke-color': getRandomColor(),
             deg: 0,
-            font:'impacted',
+            font: 'impacted',
             x: gElCanvas.width / 2
         })
     }
@@ -227,7 +227,7 @@ function onAddEmoji(emoji) {
         size: 60,
         align: 'center',
         color: 'blue',
-        font:'impacted',
+        font: 'impacted',
         x: gElCanvas.width / 2
     })
     renderMeme()
@@ -260,8 +260,10 @@ function addLine(newLine = {
     color: 'white',
     'stroke-color': 'black',
     deg: 0,
+    font: 'impacted',
     x: gElCanvas.width / 2
 }) {
+    newLine.font = 'impacted';
     const memeLines = getGMeme().lines.length;
     if (memeLines === 0) newLine.y = 50;
     else if (memeLines === 1) newLine.y = gElCanvas.height - 50;
@@ -403,23 +405,18 @@ function drawBox(line) {
     gCtx.fill();
 
     const rad = 6;
-    const textEnd = line.x + width / 2;
-
-    // // draw resize:
     // // circle:
     gCtx.setTransform(1, 0, 0, 1, 0, 0);
 
     gCtx.beginPath();
     gCtx.translate(line.x, line.y);
     gCtx.arc(+(width + 2 * line.size) / 2, +(actualHeight + line.size) / 2, rad, 0, 2 * Math.PI);//[40]
-    gCtx.fillStyle = 'rgba(235, 238, 243,1)'
+    gCtx.fillStyle = 'rgba(235, 238, 243,1)';
     gCtx.stroke();
     gCtx.fill();
-
     
-    gCtx.setTransform(1, 0, 0, 1, 0, 0);
-
     // //circle:
+    gCtx.setTransform(1, 0, 0, 1, 0, 0);
     gCtx.beginPath();
     gCtx.arc(line.x, line.y + 1.5 * line.size, rad, 0, 2 * Math.PI);
     gCtx.fillStyle = 'rgba(235, 238, 243,1)'
@@ -586,7 +583,7 @@ function onExpandKeywords() {
     document.querySelector('.keywords-by-popularity').classList.toggle('expand-keywords')
 }
 
-function onSelectFont(value){
+function onSelectFont(value) {
     setFont(value)
     renderMeme();
 }
