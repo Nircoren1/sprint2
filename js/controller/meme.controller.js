@@ -8,7 +8,6 @@ let gDragged = false;
 let gClickedText;
 let gSavedMemeIdx = null;
 let gRotated = null;
-let gDeg = 0;
 var gStartPos;
 function onInit() {
     gElCanvas = document.querySelector('canvas');
@@ -181,7 +180,6 @@ function addFlexibleLines() {
 function onSaveMeme() {
     setSelectedLine(-1);
     renderMeme(false, true);
-
 }
 
 function downloadImg(elLink) {
@@ -288,7 +286,6 @@ function findCoords(line, type = 'rect') {
         return { left: textStartX - line.size, right: textEnd + line.size, top: line.y - (actualHeight + line.size) / 2, bottom: line.y + (actualHeight + line.size) / 2 }
     } else if (type === 'rotate') {
         rad = 10;
-        // return line.y -(actualHeight + line.size)/2
         return { left: line.x - rad, right: line.x + rad, top: line.y + 0.5 * line.size - rad, bottom: line.y + 0.5 * line.size + rad }
     }
     else {
@@ -300,7 +297,6 @@ function findCoords(line, type = 'rect') {
             top: arcCenterY - rad, bottom: arcCenterY + rad
         }
     }
-
 }
 
 function getEvPos(ev) {
@@ -369,7 +365,6 @@ function isPointInRect(line, x, y) {
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     const width = metrics.width
     gCtx.translate(line.x, line.y);
-    gCtx.rotate(gDeg);
     gCtx.rect(-(width + 2 * line.size) / 2, -(actualHeight + line.size) / 2, width + 2 * line.size, actualHeight + line.size);//[40]
     gCtx.lineWidth = 2;
     return gCtx.isPointInPath(x, y);
