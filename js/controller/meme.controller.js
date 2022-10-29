@@ -4,13 +4,13 @@ let gElCanvas;
 let gCtx;
 let gIsdown = false;
 let gIsTextGrabbed = false;
-let clickedTextF;
+let gClickedText;
+let gSavedMemeIdx = null
 var gStartPos;
 
 function addListeners() {
     addMouseListeners();
     addTouchListeners();
-    // document.querySelector('.share-btn').addEventListener("change", uploadImg);
 }
 
 function addMouseListeners() {
@@ -20,10 +20,31 @@ function addMouseListeners() {
 }
 
 function addTouchListeners() {
-    gElCanvas.addEventListener('touchmove', onMove);
-    gElCanvas.addEventListener('touchstart', onDown);
-    gElCanvas.addEventListener('touchend', onUp);
+    gElCanvas.addEventListener('touchmove', onMove, { passive: true });
+    gElCanvas.addEventListener('touchstart', onDown, { passive: true });
+    gElCanvas.addEventListener('touchend', onUp, { passive: true });
 }
+
+const image_input = document.querySelector(".image-input");
+
+image_input.addEventListener("change", function () {
+    const reader = new FileReader();
+    reader.readAsDataURL(this.files[0]);
+    reader.addEventListener("load", () => {
+        const result = reader.result;
+        const renderdimg = new Image();
+        renderdimg.setAttribute("src", result);
+        const idx = getGimgs().length + 1
+        pushImg({ id: idx, url: result })
+        setSelectedImg(idx)
+        renderdimg.onload = () => {
+            gCtx.beginPath()
+            gCtx.drawImage(renderdimg, 0, 0, gElCanvas.width, gElCanvas.height);
+            renderMeme()
+        }
+    });
+
+});
 
 function renderMeme() {
     const meme = getGMeme();
@@ -40,16 +61,24 @@ function renderMeme() {
                 drawBox(line);
             }
         })
+
     }
 }
 
 function renderKeyWords() {
-    let htmlStr = '';
+    let keyWordsByPopStr = '';
+    let keyWordsOptionsStr = '';
     const keywordsObj = getKeywords();
     for (const word in keywordsObj) {
-        htmlStr += `<span style="font-size:${keywordsObj[word]}px" value="${word}" onclick="onKeywordClick(this.getAttribute('value'))">${word} </span>`
+        keyWordsOptionsStr += `<option data-trans="${word}" value="${getTrans(word)}"></option>`
+        keyWordsByPopStr += `<span style="font-size:${keywordsObj[word]}px;margin-right:5px" value="${word}" data-trans="${word}" onclick="onKeywordClick(this.getAttribute('value'))">${getTrans(word)} </span>`
     }
-    document.querySelector('.keywords-by-popularity').innerHTML = htmlStr;
+    document.querySelector('.keywords-by-popularity').innerHTML = keyWordsByPopStr;
+    document.querySelector('#keywords').innerHTML = keyWordsOptionsStr;
+}
+
+function toggleNavbar() {
+    document.querySelector('body').classList.toggle('open-menu');
 }
 
 function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', align) {
@@ -58,14 +87,17 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
     gCtx.strokeStyle = strokeColor;
     gCtx.fillStyle = fillColor;
     gCtx.textAlign = 'center';
+
     let diff = 0;
     if (align === 'left') diff = -size;
     if (align === 'right') diff = +size;
     gCtx.font = `${size}px impacted`;
+
+    // gCtx.rotate(90);
     gCtx.fillText(text, x + diff, y);
     gCtx.strokeText(text, x + diff, y);
-    gCtx.rotate(45 * Math.PI / 180);
-    gCtx.closePath()
+    // gCtx.setTransform(1, 0, 0, 1, 0, 0);
+
 }
 
 function onInputChange(txt) {
@@ -94,13 +126,15 @@ function onSwitchLine() {
 }
 
 function onFlexible() {
-    setLines([])
-    setSelectedLine(-1)
-    setImg(getRandomIntInclusive(1, getGimgs().length))
+    setLines([]);
+    setSelectedLine(-1);
+    setImg(getRandomIntInclusive(1, getGimgs().length));
+    const randomStr = randStr().trim()
+    const maxSize = gElCanvas.width / randomStr.length
     for (let i = 0; i < 1; i++) {
         addLine({
             txt: randStr().trim(),
-            size: getRandomIntInclusive(20, 60),
+            size: getRandomIntInclusive(20, maxSize),
             align: 'center',
             color: getRandomColor(),
             'stroke-color': getRandomColor(),
@@ -111,12 +145,17 @@ function onFlexible() {
 }
 
 function onSaveMeme() {
-    saveMeme(gElCanvas.toDataURL('image/jpeg'));
-    showSavedMemes()
-    renderMeme()
+    setSelectedLine(-1);
+    renderMeme();
+    saveMeme(gElCanvas.toDataURL('image/jpeg'), gSavedMemeIdx);
+    showSavedMemes();
+    gSavedMemeIdx = null;
+    // gRemoveBox = false
 }
 
 function downloadImg(elLink) {
+    setSelectedLine(-1);
+    renderMeme()
     const imgContent = gElCanvas.toDataURL('image/jpeg')
     elLink.href = imgContent
 }
@@ -137,14 +176,14 @@ function loadImageFromInput(ev, onImageReady) {
 
 function renderSavedMemes() {
     let memesStr = '';
-    getGsavedMemes().forEach(meme => {
-        memesStr += `<img src =${meme.imgUrl} onclick="onEditSavedMeme('${encodeURIComponent(JSON.stringify(meme))}')">`
+    getGsavedMemes().forEach((meme, idx) => {
+        memesStr += `<img src =${meme.imgUrl} onclick="onEditSavedMeme('${encodeURIComponent(JSON.stringify(meme))}',${idx})">`
     })
-
     document.querySelector('.saved-memes').innerHTML = memesStr;
 }
 
-function onEditSavedMeme(meme) {
+function onEditSavedMeme(meme, idx) {
+    gSavedMemeIdx = idx
     meme = JSON.parse(decodeURIComponent(meme));
     setGmeme(meme);
     showMemeCreator();
@@ -169,8 +208,17 @@ function onKeywordClick(keyword) {
     renderKeyWords();
 }
 
-function onSelectedLine(idx) {
+function onSetLang(lang) {
+    setLang(lang)
+    setDirection(lang)
+    doTrans()
+    setDirection(lang)
+    renderKeyWords()
+}
 
+function setDirection(lang) {
+    if (lang === 'he') document.body.classList.add('rtl')
+    else document.body.classList.remove('rtl')
 }
 
 function addLine(newLine = {
@@ -238,16 +286,16 @@ let gRotate
 function onDown(ev) {
     const meme = getGMeme();
     const pos = getEvPos(ev);
-    clickedText = false;
+    gClickedText = false;
     const idx = meme.lines.findIndex(line => {
         const boxCoords = findCoords(line);
         const textCoords = findCoords(line, 'text');
         const resizeCoords = findCoords(line, 'resize');
         const rotateCoords = findCoords(line, 'rotate');
         if (pos.x > textCoords.left && pos.x < textCoords.right && pos.y > textCoords.top && pos.y < textCoords.bottom) {
-            clickedText = {};
-            clickedText.clickPos = pos;
-            clickedText.textCoords = textCoords;
+            gClickedText = {};
+            gClickedText.clickPos = pos;
+            gClickedText.textCoords = textCoords;
             return true;
         } else if (pos.x > resizeCoords.left && pos.x < resizeCoords.right && pos.y > resizeCoords.top && pos.y < resizeCoords.bottom) {
             return gResize = true;
@@ -269,7 +317,6 @@ function onDown(ev) {
     gStartPos = { x: pos.x, y: pos.y };
     setSelectedLine(idx);
     document.querySelector('.txt-input').value = meme.lines[idx].txt
-
     renderMeme();
 }
 
@@ -290,6 +337,7 @@ function drawBox(line) {
     // draw move symbol
     gCtx.beginPath();
     const textEnd = line.x + width / 2
+    if(line.size<0) return
     gCtx.arc(coords.left + width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
     gCtx.fillStyle = 'rgba(235, 238, 243,1)'
     gCtx.fill()
@@ -340,11 +388,11 @@ function onMove(ev) {
 
     if (gResize) {
         const distance = (((pos.x - gStartPos.x) ** 2 + (pos.y - gStartPos.y) ** 2) * 0.5) / 6;
-        const isGrow = pos.x >= gStartPos.x && pos.y >= gStartPos.y ? distance : - distance;
+        const isGrow = dx >= 0 && dy >= 0 ? distance : - distance;
         const textSize = getTextSize()
-        if ((textSize <= 20 && isGrow < 0) || (textSize > 70 && isGrow > 0)) return;
+        if ((textSize <= 20 && isGrow < 0) || (textSize > 70 && isGrow > 0) || textSize <= 0) return;
         setTextSize(isGrow);
-    } else if(gRotate){
+    } else if (gRotate) {
 
     }
     else {
@@ -358,22 +406,25 @@ function onMove(ev) {
 function onAddTextInline(ev) {
     var key = ev.key;
     if (key === 'ArrowLeft') {
-        return clickedText.idx--;
+        return gClickedText.idx--;
     }
     else if (key === 'ArrowRight') {
-        return clickedText.idx++;
+        return gClickedText.idx++;
     } else if (key.length > 1 && key !== 'Backspace') {
         return
     }
-    updateText(key, clickedText.idx);
-    clickedText.idx++;
-    renderMeme();
+    updateText(key, gClickedText.idx);
+    gClickedText.idx++;
+    const meme = getGMeme()
+    const idx = meme.selectedLineIdx
+    document.querySelector('.txt-input').value = meme.lines[idx].txt
 
+    renderMeme();
 }
 
 function onUp() {
     document.removeEventListener('keydown', onAddTextInline, false);
-    if (!gDragged && gIsTextGrabbed && clickedText) {
+    if (!gDragged && gIsTextGrabbed && gClickedText) {
         charPosition();
         document.addEventListener('keydown', onAddTextInline, false);
     }
@@ -385,8 +436,8 @@ function onUp() {
 }
 
 function charPosition() {
-    const textStart = clickedText.textCoords.left;
-    let { clickPos } = clickedText;
+    const textStart = gClickedText.textCoords.left;
+    let { clickPos } = gClickedText;
     const meme = getGMeme();
     const text = meme.lines[meme.selectedLineIdx].txt;
     gCtx.beginPath();
@@ -399,7 +450,7 @@ function charPosition() {
         i++;
         clickPos.x -= charSize;
     }
-    clickedText.idx = i;
+    gClickedText.idx = i;
     return i;
 }
 
@@ -456,28 +507,8 @@ function openColorPicker() {
     document.querySelector('.color-input').click();
 }
 
-var input = document.querySelector("#file-input");
-document.querySelector(".get-img-btn").addEventListener("click", function () {
-    input.click();
-});
-
-function uploadImg() {
-    var fileObject = this.files[0];
-    var fileReader = new FileReader();
-    fileReader.readAsDataURL(fileObject);
-    fileReader.onload = function () {
-        var result = fileReader.result;
-        const renderdimg = new Image();
-        renderdimg.setAttribute("src", result);
-        const idx = getGimgs().length + 1
-        pushImg({ id: idx, url: result })
-        setSelectedImg(idx)
-        renderdimg.onload = () => {
-            gCtx.beginPath()
-            gCtx.drawImage(renderdimg, 0, 0, gElCanvas.width, gElCanvas.height);
-            renderMeme()
-        }
-    }
+function onUploadImg() {
+    image_input.click()
 }
 
 function onMoveTextVertically(val) {
@@ -485,29 +516,20 @@ function onMoveTextVertically(val) {
     renderMeme()
 }
 
-
-
 const shareData = {
-    title: 'MDN',
-    text: 'Learn web development on MDN!',
+    title: 'meme',
+    text: 'look at my meme!',
     url: 'http://ca-upload.com/here/serveForShare.php?id=635b9c6de3f7f'
 }
 
-const btn = document.querySelector('button');
-const resultPara = document.querySelector('.result');
+function onExpandKeywords() {
+    document.querySelector('.keywords-by-popularity').classList.toggle('expand-keywords')
+}
 
-// Share must be triggered by "user activation"
-// btn.addEventListener('click', async () => {
-//     const shareData = {
-//         title: 'MDN',
-//         text: 'Learn web development on MDN!',
-//         url: 'http://ca-upload.com/here/serveForShare.php?id=635b9c6de3f7f'
-//     }
+// const btn = document.querySelector('button');
+// const resultPara = document.querySelector('.result');
 
-//     try {
-//         await navigator.share(shareData);
-//         resultPara.textContent = 'MDN shared successfully';
-//     } catch (err) {
-//         resultPara.textContent = `Error: ${err}`;
-//     }
+// var input = document.querySelector("#file-input");
+// document.querySelector(".get-img-btn").addEventListener("click", function () {
+//     input.click();
 // });

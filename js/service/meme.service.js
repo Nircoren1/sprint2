@@ -15,15 +15,13 @@ var gImgs = [
     { id: 13, url: 'assets/meme-imgs-square/13.jpg', keywords: ['funny', 'cat'] },
     { id: 14, url: 'assets/meme-imgs-square/14.jpg', keywords: ['funny', 'cat'] },
     { id: 15, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 16, url: 'assets/meme-imgs-diverse-shape/Oprah-You-Get-A.jpg', keywords: ['funny', 'cat'] },
-    { id: 17, url: 'assets/meme-imgs-diverse-shape/X-Everywhere.jpg', keywords: ['funny', 'cat'] },
-    { id: 18, url: 'assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny', 'cat'] },
-    { id: 19, url: 'assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny', 'cat'] },
-    { id: 20, url: 'assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump', 'cat'] },
-    { id: 21, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny', 'cat'] },
-    { id: 22, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 23, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
-    { id: 24, url: 'assets/meme-imgs-diverse-shape/2.jpg', keywords: ['funny', 'cat'] },
+    { id: 16, url: 'assets/meme-imgs-diverse-shape/Oprah-You-Get-A.jpg', keywords: ['funny'] },
+    { id: 17, url: 'assets/meme-imgs-diverse-shape/X-Everywhere.jpg', keywords: ['funny'] },
+    { id: 18, url: 'assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny'] },
+    { id: 19, url: 'assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny'] },
+    { id: 20, url: 'assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump'] },
+    { id: 21, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny'] },
+   
 
 
 ];
@@ -38,8 +36,7 @@ var gKeywords = loadFromStorage('keywords') ? loadFromStorage('keywords') : {
 var gMeme = {
     selectedImgId: 5,
     selectedLineIdx: -1,
-    lines: [
-    ]
+    lines: []
 }
 
 var gSavedMemes = loadFromStorage('savedMemes') ? loadFromStorage('savedMemes') : [];
@@ -78,6 +75,7 @@ function getKeywords() {
 }
 
 function getTextSize() {
+    if(gMeme.selectedLineIdx === -1) return -1
     return gMeme.lines[gMeme.selectedLineIdx].size
 }
 
@@ -122,9 +120,13 @@ function setSwitchedLine() {
 }
 
 
-function saveMeme(url) {
-    gMeme.imgUrl = url;
-    gSavedMemes.push(gMeme);
+function saveMeme(url, idx) {
+    let savedMeme = JSON.parse(JSON.stringify(gMeme));
+    savedMeme.imgUrl = url
+    if (typeof idx === 'number') {
+        gSavedMemes.splice(idx, 1, savedMeme);
+    }
+    else gSavedMemes.push(savedMeme);
     saveToStorage('savedMemes', gSavedMemes);
 }
 
@@ -134,7 +136,6 @@ function updateKeywords(keyword) {
     if (gKeywords[keyword]) gKeywords[keyword] += 2;
     saveToStorage('keywords', gKeywords);
 }
-
 
 function moveText(dx, dy) {
     gMeme.lines[gMeme.selectedLineIdx].x += dx;

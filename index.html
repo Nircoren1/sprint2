@@ -13,32 +13,41 @@
 </head>
 
 <body onload="onInit()">
-    <header>
+
+    <header class="ltr"> 
         <div class="logo-container">
             <img src="./assets/logo/logo.png" class="logo" alt="">
         </div>
         <ul>
-            <li><a class="active gallery-link" onclick="showGallery(this)">Gallery</a></li>
-            <li><a class="memes-link" onclick="showSavedMemes(this)">Memes</a></li>
+            <li><a class=" gallery-link active" onclick="showGallery(this)" data-trans="gallery">Gallery</a></li>
+            <li><a class="memes-link" onclick="showSavedMemes(this)" data-trans="memes">Memes</a></li>
+            <li> <select onchange="onSetLang(this.value)">
+                    <option value="en">English</option>
+                    <option value="he">עברית</option>
+                </select>
+            </li>
         </ul>
+
+        <img src="./assets/icons/hamburger-bar.png" class="hamburger-bar" alt="" onclick="toggleNavbar()">
     </header>
     </section>
     <section class="gallery-container">
         <div class="fliter-container">
             <div class='filter-input-container'>
                 <img class="search-icon" src="./assets/icons/search-icon.svg" alt="">
-                <input list="keywords" placeholder="Search" class="filter-input" oninput="onFilterGallery(this.value)">
+                <input list="keywords" data-trans="search" placeholder="Search" class="filter-input" oninput="onFilterGallery(this.value)">
             </div>
             <datalist id="keywords">
-                <option value="cute">
-                <option value="trump">
-                <option value="dog">
-                <option value="Opera">
-                <option value="Safari">
+                <option data-trans="cute" value="cute">
+                <option data-trans="trump" value="trump">
+                <option data-trans="dog" value="dog">
+                <option data-trans="Opera" value="Opera">
+                <option data-trans="safari" value="Safari">
             </datalist>
             <div class="keywords-by-popularity"></div>
+            <button class="more-keywords-btn" data-trans="more" onclick="onExpandKeywords()">more</button>
         </div>
-        <div class="gallery"></div>
+        <div class="gallery ltr"></div>
 
     </section>
     <section class="meme-creator hide">
@@ -66,20 +75,23 @@
                         src="./assets/icons/font-increase.png" alt=""></button>
                 <button value="-1" class="decrease-font" onclick="onFontSizeChange(this.value)"><img
                         src="./assets/icons/font-decrease.png" alt=""></button>
-                <button onclick="onAlign('left')"><img src="./assets/icons/text-align-left.svg" alt=""></button>
-                <button onclick="onAlign('center')"><img src="./assets/icons/text-align-center.svg" alt=""></button>
-                <button onclick="onAlign('right')"><img src="./assets/icons/text-align-right.svg"></button>
+                <button onclick="onAlign('left')" class="align-left-btn"><img src="./assets/icons/text-align-left.svg"
+                        alt=""></button>
+                <button onclick="onAlign('center')" class="align-center-btn"><img
+                        src="./assets/icons/text-align-center.svg" alt=""></button>
+                <button onclick="onAlign('right')" class="align-right-btn"><img
+                        src="./assets/icons/text-align-right.svg"></button>
                 <button class="color-btn">
                     <img src="./assets/icons/color-pallete-icon.png" alt="">
                     <input class="color-input" type="color" name="farbe" id="farbe" oninput="onColorChange(this.value)">
                 </button>
                 <button class="color-btn">
                     <img src="./assets/icons/stroke-color-icon.png" alt="">
-                    <input type="color" name="" id="" class="color-input" value="white"
+                    <input type="color" name="" id="" class="color-input"
                         oninput="onStrokeColorChange(this.value)">
                 </button>
 
-                <button onclick="onFlexible()"><img src="./assets/icons/dice.png" alt=""></button>
+                <button class="flexible-btn" onclick="onFlexible()"><img src="./assets/icons/dice.png" alt=""></button>
                 <button onclick="onSaveMeme()"><img src="./assets/icons/save-icon.png" alt=""></button>
             </div>
             <div class="emoji-container">
@@ -89,23 +101,26 @@
                 <div class="stickers" onclick="onAddEmoji('⌚')">⌚</div>
                 <div class="stickers" onclick="onAddEmoji('😈')">😈</div>
                 <div class="stickers" onclick="onAddEmoji('😜')">😜</div>
-              
-            
+
+
             </div>
 
             <div class="share-download-container">
                 <button class="share-btn" onclick="onShareCanvas()">
                     <img src="./assets/icons/share.svg" alt="">
-                    <span>Share</span>
+                    <span data-trans="share">Share</span>
                 </button>
                 <div>
                     <a href="#" class="download-btn" onclick="downloadImg(this)" download="my-img.jpg">
                         <img src="./assets/icons/download.svg" alt="">
-                        <span>Download</span>
+                        <span data-trans="download">Download</span>
                     </a>
                 </div>
-                <input type='file' id='file-input' hidden>
-                <button class="get-img-btn">Upload</button>
+
+                <input type="file" class="image-input" accept="image/jpeg, image/png, image/jpg" hidden>
+                <!-- 
+                <input type='file' id='file-input' hidden> -->
+                <button class="get-img-btn" onclick="onUploadImg()" data-trans="upload">Upload</button>
 
             </div>
     </section>
@@ -115,6 +130,7 @@
 
     <script src="./js/service/storage.service.js"></script>
     <script src="./js/service/upload.service.js"></script>
+    <script src="./js/service/i18.service.js"></script>
     <script src="./js/service/utils.service.js"></script>
     <script src="./js/service/meme.service.js"></script>
     <script src="./js/controller/gallery.controller.js"></script>
