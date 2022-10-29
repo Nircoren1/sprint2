@@ -4,9 +4,24 @@ let gElCanvas;
 let gCtx;
 let gIsdown = false;
 let gIsTextGrabbed = false;
+let gDragged = false;
 let gClickedText;
-let gSavedMemeIdx = null
+let gSavedMemeIdx = null;
+let gRotated = null;
+let gDeg = 0;
 var gStartPos;
+function onInit() {
+    gElCanvas = document.querySelector('canvas');
+    gCtx = gElCanvas.getContext('2d');
+    renderMeme();
+    renderGallery();
+    renderSavedMemes()
+    renderKeyWords()
+    addListeners()
+    onFlexible()
+}
+
+
 
 function addListeners() {
     addMouseListeners();
@@ -43,25 +58,33 @@ image_input.addEventListener("change", function () {
             renderMeme()
         }
     });
-
 });
 
-function renderMeme() {
+function renderMeme(flexible = false, savedMeme = false) {
     const meme = getGMeme();
     const img = new Image();
     const imgs = getGimgs();
     img.src = imgs[+meme.selectedImgId - 1].url;
     img.onload = () => {
         gElCanvas.height = (gElCanvas.width * img.naturalHeight) / img.naturalWidth;
-        gCtx.beginPath()
+        gCtx.beginPath();
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
+        if (flexible) {
+            addFlexibleLines();
+            flexible = false;
+        }
         meme.lines.forEach((line, idx) => {
-            if (meme.selectedLineIdx === idx) {
+            if (meme.selectedLineIdx !== idx) deg = 0
+            if (meme.selectedLineIdx === idx && !savedMeme) {
                 drawBox(line);
             }
-            drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
-            
+            drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align, line.deg,line.font);
+
         })
+        if (savedMeme) {
+            saveMeme(gElCanvas.toDataURL('image/jpeg'), gSavedMemeIdx);
+            showSavedMemes();
+        }
 
     }
 }
@@ -80,9 +103,9 @@ function renderKeyWords() {
 
 function toggleNavbar() {
     document.querySelector('body').classList.toggle('open-menu');
-}//
+}
 
-function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', align) {
+function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', align, deg,font) {
     gCtx.beginPath()
     gCtx.lineWidth = 1;
     gCtx.strokeStyle = strokeColor;
@@ -92,13 +115,18 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
     let diff = 0;
     if (align === 'left') diff = -size;
     if (align === 'right') diff = +size;
-    gCtx.font = `${size}px impacted`;
+    gCtx.font = `${size}px ${font}`;
 
-    // gCtx.rotate(90);
-    gCtx.fillText(text, x + diff, y);
-    gCtx.strokeText(text, x + diff, y);
-    // gCtx.setTransform(1, 0, 0, 1, 0, 0);
-    gCtx.closePath()
+    //rotation
+    gCtx.textBaseline = "middle";
+    gCtx.textAlign = 'center';
+    gCtx.translate(x + diff, y);
+    gCtx.rotate(deg);
+
+    gCtx.fillText(text, 0, 0);
+    gCtx.strokeText(text, 0, 0);
+
+    gCtx.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function onInputChange(txt) {
@@ -130,6 +158,10 @@ function onFlexible() {
     setLines([]);
     setSelectedLine(-1);
     setImg(getRandomIntInclusive(1, getGimgs().length));
+    renderMeme(true);
+}
+
+function addFlexibleLines() {
     const randomStr = randStr().trim()
     const maxSize = gElCanvas.width / randomStr.length
     for (let i = 0; i < 2; i++) {
@@ -139,40 +171,38 @@ function onFlexible() {
             align: 'center',
             color: getRandomColor(),
             'stroke-color': getRandomColor(),
+            deg: 0,
+            font:'impacted',
             x: gElCanvas.width / 2
         })
     }
-    renderMeme();
 }
 
 function onSaveMeme() {
     setSelectedLine(-1);
-    renderMeme();
-    saveMeme(gElCanvas.toDataURL('image/jpeg'), gSavedMemeIdx);
-    showSavedMemes();
-    gSavedMemeIdx = null;
-    // gRemoveBox = false
+    renderMeme(false, true);
+
 }
 
 function downloadImg(elLink) {
     setSelectedLine(-1);
-    renderMeme()
-    const imgContent = gElCanvas.toDataURL('image/jpeg')
-    elLink.href = imgContent
+    renderMeme();
+    const imgContent = gElCanvas.toDataURL('image/jpeg');
+    elLink.href = imgContent;
 }
 
 function onImgInput(ev) {
-    loadImageFromInput(ev, renderImg)
+    loadImageFromInput(ev, renderImg);
 }
 
 function loadImageFromInput(ev, onImageReady) {
     const reader = new FileReader()
     reader.onload = function (event) {
-        let img = new Image()
-        img.src = event.target.result
-        img.onload = onImageReady.bind(null, img)
+        let img = new Image();
+        img.src = event.target.result;
+        img.onload = onImageReady.bind(null, img);
     }
-    reader.readAsDataURL(ev.target.files[0])
+    reader.readAsDataURL(ev.target.files[0]);
 }
 
 function renderSavedMemes() {
@@ -184,7 +214,7 @@ function renderSavedMemes() {
 }
 
 function onEditSavedMeme(meme, idx) {
-    gSavedMemeIdx = idx
+    gSavedMemeIdx = idx;
     meme = JSON.parse(decodeURIComponent(meme));
     setGmeme(meme);
     showMemeCreator();
@@ -197,6 +227,7 @@ function onAddEmoji(emoji) {
         size: 60,
         align: 'center',
         color: 'blue',
+        font:'impacted',
         x: gElCanvas.width / 2
     })
     renderMeme()
@@ -228,6 +259,7 @@ function addLine(newLine = {
     align: 'center',
     color: 'white',
     'stroke-color': 'black',
+    deg: 0,
     x: gElCanvas.width / 2
 }) {
     const memeLines = getGMeme().lines.length;
@@ -238,9 +270,9 @@ function addLine(newLine = {
 }
 
 function findCoords(line, type = 'rect') {
-    gCtx.beginPath()
+    gCtx.beginPath();
     gCtx.lineWidth = 1;
-    gCtx.font = `${line.size}px Arial`
+    gCtx.font = `${line.size}px impacted`;
     let metrics = gCtx.measureText(line.txt);
     let width = metrics.width;
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
@@ -251,9 +283,10 @@ function findCoords(line, type = 'rect') {
         return { left: textStartX, right: textEnd, top: line.y - actualHeight, bottom: line.y }
     }
     else if (type === 'rect') {
-        return { left: textStartX - line.size, right: textEnd + line.size, top: line.y - actualHeight - 0.5 * line.size, bottom: line.y + line.size }
+        return { left: textStartX - line.size, right: textEnd + line.size, top: line.y - (actualHeight + line.size) / 2, bottom: line.y + (actualHeight + line.size) / 2 }
     } else if (type === 'rotate') {
-        rad = 10
+        rad = 10;
+        // return line.y -(actualHeight + line.size)/2
         return { left: line.x - rad, right: line.x + rad, top: line.y + 0.5 * line.size - rad, bottom: line.y + 0.5 * line.size + rad }
     }
     else {
@@ -282,20 +315,20 @@ function getEvPos(ev) {
             y: ev.pageY - ev.target.offsetTop - ev.target.clientTop
         }
     }
-    return pos
+    return pos;
 }
 
 let gResize = false
-let gRotate
 function onDown(ev) {
     const meme = getGMeme();
     const pos = getEvPos(ev);
     gClickedText = false;
     const idx = meme.lines.findIndex(line => {
+        isPointInRect(line, pos.x, pos.y);
+
         const boxCoords = findCoords(line);
         const textCoords = findCoords(line, 'text');
         const resizeCoords = findCoords(line, 'resize');
-        const rotateCoords = findCoords(line, 'rotate');
         if (pos.x > textCoords.left && pos.x < textCoords.right && pos.y > textCoords.top && pos.y < textCoords.bottom) {
             gClickedText = {};
             gClickedText.clickPos = pos;
@@ -303,9 +336,10 @@ function onDown(ev) {
             return true;
         } else if (pos.x > resizeCoords.left && pos.x < resizeCoords.right && pos.y > resizeCoords.top && pos.y < resizeCoords.bottom) {
             return gResize = true;
-            // gCtx.arc(line.x, line.y + 0.5 * line.size, rad, 0, 2 * Math.PI);
-        } else if (pos.x > rotateCoords.left && pos.x < rotateCoords.right && pos.y > rotateCoords.top && pos.y < rotateCoords.bottom) {
-            return rotate = true;
+        } else if (isPointInRect(line, pos.x, pos.y)) {
+            return true
+        } else if (isPointInRotate(line, pos.x, pos.y)) {
+            return gRotated = true;
         }
         else {
             return (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom);
@@ -324,67 +358,79 @@ function onDown(ev) {
     renderMeme();
 }
 
-function drawBox(line) {
+
+function isPointInRect(line, x, y) {
     gCtx.beginPath();
     gCtx.lineWidth = 1;
     gCtx.font = `${line.size}px impacted`
-    console.log(line.size);
-    const coords = findCoords(line)
     let metrics = gCtx.measureText(line.txt);
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     const width = metrics.width
-    //draw box
+    gCtx.translate(line.x, line.y);
+    gCtx.rotate(gDeg);
+    gCtx.rect(-(width + 2 * line.size) / 2, -(actualHeight + line.size) / 2, width + 2 * line.size, actualHeight + line.size);//[40]
+    gCtx.lineWidth = 2;
+    return gCtx.isPointInPath(x, y);
+}
 
-    gCtx.rect(coords.left, coords.top, width + 2 * line.size, actualHeight + line.size);//[40]
+function isPointInRotate(line, x, y) {
+    gCtx.setTransform(1, 0, 0, 1, 0, 0);
+    gCtx.beginPath();
+    gCtx.lineWidth = 1;
+    const rad = 6;
+    gCtx.font = `${line.size}px impacted`;
+    gCtx.arc(line.x, line.y + 1.5 * line.size, rad, 0, 2 * Math.PI);
+    return gCtx.isPointInPath(x, y);
+}
+
+function drawBox(line) {
+
+    gCtx.beginPath();
+    gCtx.lineWidth = 1;
+    gCtx.font = `${line.size}px impacted`;
+    let metrics = gCtx.measureText(line.txt);
+    let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const width = metrics.width;
+
+    gCtx.translate(line.x, line.y);
+    gCtx.beginPath()
+    gCtx.rotate(line.deg);
+    gCtx.rect(-(width + 2 * line.size) / 2, -(actualHeight + line.size) / 2, width + 2 * line.size, actualHeight + line.size);//[40]
     gCtx.lineWidth = 2;
     gCtx.strokeStyle = '#ffffff';
     gCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     gCtx.stroke();
     gCtx.fill();
 
-    // draw move symbol
+    const rad = 6;
+    const textEnd = line.x + width / 2;
+
+    // // draw resize:
+    // // circle:
+    gCtx.setTransform(1, 0, 0, 1, 0, 0);
+
     gCtx.beginPath();
-    const textEnd = line.x + width / 2
-    if (line.size < 0) return
-    gCtx.arc(coords.left + width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
+    gCtx.translate(line.x, line.y);
+    gCtx.arc(+(width + 2 * line.size) / 2, +(actualHeight + line.size) / 2, rad, 0, 2 * Math.PI);//[40]
+    gCtx.fillStyle = 'rgba(235, 238, 243,1)'
+    gCtx.stroke();
+    gCtx.fill();
+
+    
+    gCtx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // //circle:
+    gCtx.beginPath();
+    gCtx.arc(line.x, line.y + 1.5 * line.size, rad, 0, 2 * Math.PI);
     gCtx.fillStyle = 'rgba(235, 238, 243,1)'
     gCtx.fill()
 
-    //icon
-    gCtx.beginPath()
-    gCtx.lineWidth = 1;
-    gCtx.fillStyle = 'rgba(34, 37, 44,0.76)';
-    gCtx.font = `${line.size / 1.5}px impacted`;
-    gCtx.fillText('✥', coords.left + width + 2 * line.size, line.size / 4.8 + coords.top + (actualHeight + line.size) / 2);
-
-    // draw resize:
-    // circle:
-    gCtx.beginPath();
-    const rad = 6
-    gCtx.arc(textEnd + line.size, line.y + 0.5 * line.size, rad, 0, 2 * Math.PI);//[40]
-    gCtx.fillStyle = 'rgba(235, 238, 243,1)'
-    gCtx.fill()
-
-    //draw rotate
-    //circle:
-    gCtx.beginPath();
-    gCtx.arc(line.x, line.y + 0.5 * line.size, rad, 0, 2 * Math.PI);
-    gCtx.fillStyle = 'rgba(235, 238, 243,1)'
-    gCtx.fill()
-
-    //icon
-    gCtx.beginPath()
-    gCtx.lineWidth = 1;
-    gCtx.fillStyle = 'rgba(34, 37, 44,0.76)';
-    gCtx.font = `${10}px impacted`;
-    gCtx.fillText('↺', line.x, line.y + 0.5 * line.size + 0.4 * rad);
-    drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
-    // U+021BA
-
+    gCtx.setTransform(1, 0, 0, 1, 0, 0);
 }
 
-let gDragged = false
 function onMove(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     setCursor(ev);
     const isDrag = gIsTextGrabbed;
     if (!isDrag) return;
@@ -399,8 +445,10 @@ function onMove(ev) {
         const textSize = getTextSize()
         if ((textSize <= 20 && isGrow < 0) || (textSize > 70 && isGrow > 0) || textSize <= 0) return;
         setTextSize(isGrow);
-    } else if (gRotate) {
-
+    } else if (gRotated) {
+        const deg = (((pos.x - gStartPos.x) ** 2 + (pos.y - gStartPos.y) ** 2) * 0.5) / 6;
+        const isRight = dx >= 0 && dy >= 0 ? deg : - deg;
+        setDeg(+isRight)
     }
     else {
         moveText(dx, dy)
@@ -438,7 +486,8 @@ function onUp() {
 
     gIsTextGrabbed = false;
     gDragged = false;
-    gResize = false
+    gResize = false;
+    gRotated = false;
     document.body.style.cursor = 'auto';
 }
 
@@ -449,7 +498,7 @@ function charPosition() {
     const text = meme.lines[meme.selectedLineIdx].txt;
     gCtx.beginPath();
     gCtx.lineWidth = 1;
-    gCtx.font = `${meme.lines[meme.selectedLineIdx].size}px Arial`;
+    gCtx.font = `${meme.lines[meme.selectedLineIdx].size}px impacted`;
 
     let i = 0;
     while (clickPos.x > textStart) {
@@ -488,21 +537,25 @@ function onAlign(dir) {
 function setCursor(ev) {
     const meme = getGMeme();
     const pos = getEvPos(ev)
+    const elCanvas = document.querySelector('.canvas-container')
+
     const overLine = meme.lines.find(line => {
         const boxCoords = findCoords(line);
         const textCoords = findCoords(line, 'text')
         const resizeCoords = findCoords(line, 'resize');
         const rotate = findCoords(line, 'rotate');
         if (pos.x > textCoords.left && pos.x < textCoords.right && pos.y > textCoords.top && pos.y < textCoords.bottom) {
-            document.querySelector('.canvas-container').style.cursor = 'text';
+            elCanvas.style.cursor = 'text';
             return true;
         } else if (pos.x > resizeCoords.left && pos.x < resizeCoords.right && pos.y > resizeCoords.top && pos.y < resizeCoords.bottom) {
-            document.querySelector('.canvas-container').style.cursor = 'nw-resize';
-            return true
+            elCanvas.style.cursor = 'nw-resize';
+            return true;
         }
         else if (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom) {
-            document.querySelector('.canvas-container').style.cursor = 'grab';
-            return true
+            elCanvas.style.cursor = 'grab';
+            return true;
+        } else if (isPointInRotate(line, pos.x, pos.y)) {
+            elCanvas.style.cursor = 'resize'
         }
     })
     if (!overLine) {
@@ -533,10 +586,7 @@ function onExpandKeywords() {
     document.querySelector('.keywords-by-popularity').classList.toggle('expand-keywords')
 }
 
-// const btn = document.querySelector('button');
-// const resultPara = document.querySelector('.result');
-
-// var input = document.querySelector("#file-input");
-// document.querySelector(".get-img-btn").addEventListener("click", function () {
-//     input.click();
-// });
+function onSelectFont(value){
+    setFont(value)
+    renderMeme();
+}

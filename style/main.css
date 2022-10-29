@@ -411,6 +411,12 @@ body.rtl .filter-input-container img {
     background-color: #ffffff;
 }
 
+.font-input {
+    height: 30px;
+    width: 80px;
+    box-shadow: 1px 5px 0 rgb(92 92 92 / 55%), inset 0 5px 0 rgb(255 255 255 / 58%);
+}
+
 .stickers {
     display: inline;
 }
@@ -494,7 +500,7 @@ body.rtl .filter-input-container img {
 
     .fliter-container {
         grid-template-columns: 8fr 1fr;
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: 60px 1fr;
     }
 
     .filter-input-container {
@@ -528,6 +534,8 @@ body.rtl .filter-input-container img {
 
     }
 
+
+
 }
 
 /* nav bar */
@@ -538,7 +546,8 @@ body.rtl .filter-input-container img {
         border-radius: 0;
         width: 100%;
         margin: 0;
-        padding: 0;
+        padding: 0 10px 0 10px;
+
     }
 
     ul {
@@ -548,7 +557,7 @@ body.rtl .filter-input-container img {
         top: 44px;
         width: 100%;
         padding: 0;
-        height: 100px;
+        height: 150px;
         z-index: 10;
     }
 
@@ -570,7 +579,7 @@ body.rtl .filter-input-container img {
 
     }
 
-    .gallery-container{
+    .gallery-container {
         margin-top: 75px;
 
     }
@@ -579,6 +588,10 @@ body.rtl .filter-input-container img {
 
         grid-template-columns: repeat(auto-fit, 130px);
 
+    }
+
+    .saved-memes {
+        margin-top: 70px;
     }
 
     .canvas-container {
@@ -629,9 +642,11 @@ body.rtl .filter-input-container img {
         gap: 20px;
     }
 
-    header {
-        padding: 0 10px 0 10px;
+    .font-input {
+        grid-column: 1/4;
+
     }
+
 }
 
 .color-btn {

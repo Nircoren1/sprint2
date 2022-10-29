@@ -21,7 +21,7 @@ var gImgs = [
     { id: 19, url: 'assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny'] },
     { id: 20, url: 'assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump'] },
     { id: 21, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny'] },
-   
+
 
 
 ];
@@ -75,7 +75,7 @@ function getKeywords() {
 }
 
 function getTextSize() {
-    if(gMeme.selectedLineIdx === -1) return -1
+    if (gMeme.selectedLineIdx === -1) return -1
     return gMeme.lines[gMeme.selectedLineIdx].size
 }
 
@@ -169,4 +169,13 @@ function updateText(key, idx) {
     };
     gMeme.lines[gMeme.selectedLineIdx].txt = lineText.slice(0, idx) + key + lineText.slice(idx);
 
+}
+
+function setDeg(deg) {
+    typeof gMeme.lines[gMeme.selectedLineIdx].deg === 'number' ? gMeme.lines[gMeme.selectedLineIdx].deg += deg / 2 : gMeme.lines[gMeme.selectedLineIdx].deg = 0
+}
+
+function setFont(value){
+    if(gMeme.selectedLineIdx < 0) return
+    gMeme.lines[gMeme.selectedLineIdx].font = value;
 }
