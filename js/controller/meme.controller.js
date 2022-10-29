@@ -56,10 +56,11 @@ function renderMeme() {
         gCtx.beginPath()
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
         meme.lines.forEach((line, idx) => {
-            drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
             if (meme.selectedLineIdx === idx) {
                 drawBox(line);
             }
+            drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
+            
         })
 
     }
@@ -97,7 +98,7 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
     gCtx.fillText(text, x + diff, y);
     gCtx.strokeText(text, x + diff, y);
     // gCtx.setTransform(1, 0, 0, 1, 0, 0);
-
+    gCtx.closePath()
 }
 
 function onInputChange(txt) {
@@ -131,7 +132,7 @@ function onFlexible() {
     setImg(getRandomIntInclusive(1, getGimgs().length));
     const randomStr = randStr().trim()
     const maxSize = gElCanvas.width / randomStr.length
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 2; i++) {
         addLine({
             txt: randStr().trim(),
             size: getRandomIntInclusive(20, maxSize),
@@ -237,6 +238,9 @@ function addLine(newLine = {
 }
 
 function findCoords(line, type = 'rect') {
+    gCtx.beginPath()
+    gCtx.lineWidth = 1;
+    gCtx.font = `${line.size}px Arial`
     let metrics = gCtx.measureText(line.txt);
     let width = metrics.width;
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
@@ -321,14 +325,18 @@ function onDown(ev) {
 }
 
 function drawBox(line) {
+    gCtx.beginPath();
+    gCtx.lineWidth = 1;
+    gCtx.font = `${line.size}px impacted`
+    console.log(line.size);
     const coords = findCoords(line)
     let metrics = gCtx.measureText(line.txt);
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     const width = metrics.width
     //draw box
-    gCtx.beginPath();
+
     gCtx.rect(coords.left, coords.top, width + 2 * line.size, actualHeight + line.size);//[40]
-    gCtx.lineWidth = '2px';
+    gCtx.lineWidth = 2;
     gCtx.strokeStyle = '#ffffff';
     gCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     gCtx.stroke();
@@ -337,7 +345,7 @@ function drawBox(line) {
     // draw move symbol
     gCtx.beginPath();
     const textEnd = line.x + width / 2
-    if(line.size<0) return
+    if (line.size < 0) return
     gCtx.arc(coords.left + width + 2 * line.size, coords.top + (actualHeight + line.size) / 2, line.size / 3, 0, 2 * Math.PI);
     gCtx.fillStyle = 'rgba(235, 238, 243,1)'
     gCtx.fill()
@@ -348,7 +356,6 @@ function drawBox(line) {
     gCtx.fillStyle = 'rgba(34, 37, 44,0.76)';
     gCtx.font = `${line.size / 1.5}px impacted`;
     gCtx.fillText('✥', coords.left + width + 2 * line.size, line.size / 4.8 + coords.top + (actualHeight + line.size) / 2);
-    drawText(line.txt, line.size, line.color, line.x, line.y, line['stroke-color'], line.align);
 
     // draw resize:
     // circle:
@@ -442,7 +449,7 @@ function charPosition() {
     const text = meme.lines[meme.selectedLineIdx].txt;
     gCtx.beginPath();
     gCtx.lineWidth = 1;
-    gCtx.font = `${meme.size}px Arial`;
+    gCtx.font = `${meme.lines[meme.selectedLineIdx].size}px Arial`;
 
     let i = 0;
     while (clickPos.x > textStart) {
