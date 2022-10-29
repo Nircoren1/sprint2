@@ -80,7 +80,7 @@ function renderKeyWords() {
 
 function toggleNavbar() {
     document.querySelector('body').classList.toggle('open-menu');
-}
+}//
 
 function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', align) {
     gCtx.beginPath()
