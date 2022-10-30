@@ -167,7 +167,7 @@ function onSwitchLine() {
     renderMeme()
 }
 
-function onFlexible() {
+function onFlexible(randImg = false) {
     document.querySelector('.meme-creator').classList.remove('hide');
     document.querySelector('.gallery-container').classList.add('hide');
     document.querySelector('.saved-memes-container').classList.add('hide');
@@ -175,7 +175,7 @@ function onFlexible() {
     document.querySelector('.gallery-link').classList.remove('active');
     setLines([]);
     setSelectedLine(-1);
-    setImg(getRandomIntInclusive(1, getGimgs().length));
+    if(randImg) setImg(getRandomIntInclusive(1, getGimgs().length));
     renderMeme(true);
 }
 

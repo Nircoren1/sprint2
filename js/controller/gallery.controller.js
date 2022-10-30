@@ -28,7 +28,7 @@ function showMemeCreator() {
     document.querySelector('.saved-memes-container').classList.add('hide');
     document.querySelector('.memes-link').classList.remove('active');
     document.querySelector('.gallery-link').classList.remove('active');
-    if (getGMeme().lines.length === 0) onFlexible(true)
+    if (getGMeme().lines.length === 0) onFlexible(false)
 
 }
 
