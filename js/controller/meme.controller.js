@@ -450,13 +450,12 @@ function onMove(ev) {
     gDragged = true;
     const dx = pos.x - gStartPos.x;
     const dy = pos.y - gStartPos.y;
-    if (dx > 20 || dy > 20) return onUp()
-    if (pos.x < 5 || pos.x >= gElCanvas.width - 5) return onUp()
+    if (dx > 20 || dy > 20 || pos.x < 5 || pos.x >= gElCanvas.width - 5 || pos.x < 5 || pos.x >= gElCanvas.width) return onUp()
     if (gResize) {
         if (pos.x === 0) return gIsLineGrabbed = false
         const distance = (((pos.x - gStartPos.x) ** 2 + (pos.y - gStartPos.y) ** 2) * 0.5) / 6;
         const isGrow = dx >= 0 && dy >= 0 ? distance : - distance;
-        const textSize = getTextSize()
+        const textSize = getTextSize() + isGrow
         if ((textSize <= 20 && isGrow < 0) || (textSize > 70 && isGrow > 0) || textSize <= 0) return;
         setTextSize(isGrow);
     } else if (gRotated) {
