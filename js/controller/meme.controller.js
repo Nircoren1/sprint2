@@ -324,7 +324,6 @@ function getEvPos(ev) {
         y: ev.offsetY
     }
     if (TOUCH_EVS.includes(ev.type)) {
-        ev.preventDefault();
 
         ev = ev.changedTouches[0];
         pos = {
@@ -368,7 +367,7 @@ function onDown(ev) {
         renderMeme();
         return;
     }
-    gIsLineGrabbed = true;
+    gIsLineGrabbed = true
     gStartPos = { x: pos.x, y: pos.y };
     setSelectedLine(idx);
     document.querySelector('.txt-input').value = meme.lines[idx].txt
@@ -441,15 +440,14 @@ function drawBox(line) {
 
 function onMove(ev) {
     // console.log(ev.offsetX);
-    ev.preventDefault();
     ev.stopPropagation();
     setCursor(ev);
     const isDrag = gIsLineGrabbed;
     const pos = getEvPos(ev);
     if (!isDrag) {
-        return onUp()
+        return
     }
-
+    gDragged = true;
     const dx = pos.x - gStartPos.x;
     const dy = pos.y - gStartPos.y;
     if (dx > 20 || dy > 20) return onUp()
@@ -467,9 +465,8 @@ function onMove(ev) {
         setDeg(+isRight)
     }
     else {
-        gDragged = true;
-        setCursor(ev);
         moveText(dx, dy)
+
     }
     gStartPos = pos;
     renderMeme();
@@ -494,7 +491,7 @@ function onAddTextInline(ev) {
     renderMeme();
 }
 
-function onUp() {
+function onUp(ev) {
     document.removeEventListener('keydown', onAddTextInline, false);
     if (!gDragged && gIsLineGrabbed && gClickedText) {
         charPosition();
@@ -505,7 +502,8 @@ function onUp() {
     gDragged = false;
     gResize = false;
     gRotated = false;
-    document.body.style.cursor = 'default';
+    console.log('up');
+    setCursor(ev)
 }
 
 function charPosition() {
@@ -555,7 +553,8 @@ function setCursor(ev) {
     const meme = getGMeme();
     const pos = getEvPos(ev)
     const elCanvas = document.querySelector('.canvas-container')
-    if (gDragged) return elCanvas.style.cursor = 'grabbing'
+
+
     const overLine = meme.lines.find(line => {
         const boxCoords = findCoords(line);
         const textCoords = findCoords(line, 'text')
@@ -568,12 +567,14 @@ function setCursor(ev) {
             return true;
         }
         else if (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom) {
-            elCanvas.style.cursor = 'grab'
+            if (gDragged) {
+                elCanvas.style.cursor = 'grabbing';
+            } else {
+                elCanvas.style.cursor = 'grab';
+            }
             return true;
         } else if (isPointInRotate(line, pos.x, pos.y)) {
             elCanvas.style.cursor = 'resize'
-        } else {
-            document.querySelector('.canvas-container').style.cursor = 'default';
         }
     })
     if (!overLine) {
