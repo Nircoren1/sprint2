@@ -2,7 +2,7 @@ var gKeywordSearchCountMap = { 'funny': 12, 'cat': 16, 'baby': 2 }
 var gImgs = [
     { id: 1, url: 'assets/meme-imgs-square/1.jpg', keywords: ['trump', 'funny'] },
     { id: 2, url: 'assets/meme-imgs-square/2.jpg', keywords: ['cute', 'dog'] },
-    { id: 3, url: 'assets/meme-imgs-square/3.jpg', keywords: ['bed', 'baby', 'dog'] },
+    { id: 3, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['bed', 'baby', 'dog'] },
     { id: 4, url: 'assets/meme-imgs-square/4.jpg', keywords: ['funny', 'cat'] },
     { id: 5, url: 'assets/meme-imgs-square/5.jpg', keywords: ['funny', 'cat'] },
     { id: 6, url: 'assets/meme-imgs-square/6.jpg', keywords: ['funny', 'cat'] },
@@ -20,7 +20,7 @@ var gImgs = [
     { id: 18, url: 'assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny'] },
     { id: 19, url: 'assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny'] },
     { id: 20, url: 'assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump'] },
-    { id: 21, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny'] }
+    { id: 21, url: 'assets/meme-imgs-square/3.jpg', keywords: ['funny'] }
 
 ];
 
