@@ -3,7 +3,7 @@ const TOUCH_EVS = ['touchstart', 'touchmove', 'touchend']
 let gElCanvas;
 let gCtx;
 let gIsdown = false;
-let gIsTextGrabbed = false;
+let gIsLineGrabbed = false;
 let gDragged = false;
 let gClickedText;
 let gSavedMemeIdx = null;
@@ -17,10 +17,9 @@ function onInit() {
     renderSavedMemes()
     renderKeyWords()
     addListeners()
-    onFlexible()
+
+
 }
-
-
 
 function addListeners() {
     addMouseListeners();
@@ -83,6 +82,7 @@ function renderMeme(flexible = false, savedMeme = false) {
         if (savedMeme) {
             saveMeme(gElCanvas.toDataURL('image/jpeg'), gSavedMemeIdx);
             showSavedMemes();
+            gSavedMemeIdx = null;
         }
 
     }
@@ -129,6 +129,20 @@ function drawText(text, size, fillColor, x = 10, y = 20, strokeColor = 'black', 
 }
 
 function onInputChange(txt) {
+    const meme = getGMeme()
+    // const line = meme.selectedLineIdx
+    if (meme.selectedLineIdx < 0) {
+        addLine(newLine = {
+            txt: txt,
+            size: 40,
+            align: 'center',
+            color: 'white',
+            'stroke-color': 'black',
+            deg: 0,
+            font: 'impacted',
+            x: gElCanvas.width / 2
+        })
+    }
     setLineTxt(txt);
     renderMeme();
 }
@@ -154,6 +168,11 @@ function onSwitchLine() {
 }
 
 function onFlexible() {
+    document.querySelector('.meme-creator').classList.remove('hide');
+    document.querySelector('.gallery-container').classList.add('hide');
+    document.querySelector('.saved-memes-container').classList.add('hide');
+    document.querySelector('.memes-link').classList.remove('active');
+    document.querySelector('.gallery-link').classList.remove('active');
     setLines([]);
     setSelectedLine(-1);
     setImg(getRandomIntInclusive(1, getGimgs().length));
@@ -321,6 +340,7 @@ function onDown(ev) {
     const meme = getGMeme();
     const pos = getEvPos(ev);
     gClickedText = false;
+    document.querySelector('.txt-input').value = ''
     const idx = meme.lines.findIndex(line => {
         isPointInRect(line, pos.x, pos.y);
 
@@ -348,8 +368,7 @@ function onDown(ev) {
         renderMeme();
         return;
     }
-    gIsTextGrabbed = true
-    document.body.style.cursor = 'grabbing';
+    gIsLineGrabbed = true;
     gStartPos = { x: pos.x, y: pos.y };
     setSelectedLine(idx);
     document.querySelector('.txt-input').value = meme.lines[idx].txt
@@ -409,7 +428,7 @@ function drawBox(line) {
     gCtx.fillStyle = 'rgba(235, 238, 243,1)';
     gCtx.stroke();
     gCtx.fill();
-    
+
     // //circle:
     gCtx.setTransform(1, 0, 0, 1, 0, 0);
     gCtx.beginPath();
@@ -421,17 +440,22 @@ function drawBox(line) {
 }
 
 function onMove(ev) {
+    // console.log(ev.offsetX);
     ev.preventDefault();
     ev.stopPropagation();
     setCursor(ev);
-    const isDrag = gIsTextGrabbed;
-    if (!isDrag) return;
-    gDragged = true;
+    const isDrag = gIsLineGrabbed;
     const pos = getEvPos(ev);
+    if (!isDrag) {
+        return onUp()
+    }
+
     const dx = pos.x - gStartPos.x;
     const dy = pos.y - gStartPos.y;
-
+    if (dx > 20 || dy > 20) return onUp()
+    if (pos.x < 5 || pos.x >= gElCanvas.width - 5) return onUp()
     if (gResize) {
+        if (pos.x === 0) return gIsLineGrabbed = false
         const distance = (((pos.x - gStartPos.x) ** 2 + (pos.y - gStartPos.y) ** 2) * 0.5) / 6;
         const isGrow = dx >= 0 && dy >= 0 ? distance : - distance;
         const textSize = getTextSize()
@@ -443,8 +467,9 @@ function onMove(ev) {
         setDeg(+isRight)
     }
     else {
+        gDragged = true;
+        setCursor(ev);
         moveText(dx, dy)
-
     }
     gStartPos = pos;
     renderMeme();
@@ -471,16 +496,16 @@ function onAddTextInline(ev) {
 
 function onUp() {
     document.removeEventListener('keydown', onAddTextInline, false);
-    if (!gDragged && gIsTextGrabbed && gClickedText) {
+    if (!gDragged && gIsLineGrabbed && gClickedText) {
         charPosition();
         document.addEventListener('keydown', onAddTextInline, false);
     }
 
-    gIsTextGrabbed = false;
+    gIsLineGrabbed = false;
     gDragged = false;
     gResize = false;
     gRotated = false;
-    document.body.style.cursor = 'auto';
+    document.body.style.cursor = 'default';
 }
 
 function charPosition() {
@@ -530,12 +555,11 @@ function setCursor(ev) {
     const meme = getGMeme();
     const pos = getEvPos(ev)
     const elCanvas = document.querySelector('.canvas-container')
-
+    if (gDragged) return elCanvas.style.cursor = 'grabbing'
     const overLine = meme.lines.find(line => {
         const boxCoords = findCoords(line);
         const textCoords = findCoords(line, 'text')
         const resizeCoords = findCoords(line, 'resize');
-        const rotate = findCoords(line, 'rotate');
         if (pos.x > textCoords.left && pos.x < textCoords.right && pos.y > textCoords.top && pos.y < textCoords.bottom) {
             elCanvas.style.cursor = 'text';
             return true;
@@ -544,10 +568,12 @@ function setCursor(ev) {
             return true;
         }
         else if (pos.x > boxCoords.left && pos.x < boxCoords.right && pos.y > boxCoords.top && pos.y < boxCoords.bottom) {
-            elCanvas.style.cursor = 'grab';
+            elCanvas.style.cursor = 'grab'
             return true;
         } else if (isPointInRotate(line, pos.x, pos.y)) {
             elCanvas.style.cursor = 'resize'
+        } else {
+            document.querySelector('.canvas-container').style.cursor = 'default';
         }
     })
     if (!overLine) {

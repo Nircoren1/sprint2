@@ -13,7 +13,7 @@
 
 <body onload="onInit()">
 
-    <header class="ltr"> 
+    <header class="ltr">
         <div class="logo-container">
             <img src="./assets/logo/logo.png" class="logo" alt="">
         </div>
@@ -34,7 +34,8 @@
         <div class="fliter-container">
             <div class='filter-input-container'>
                 <img class="search-icon" src="./assets/icons/search-icon.svg" alt="">
-                <input list="keywords" data-trans="search" placeholder="Search" class="filter-input" oninput="onFilterGallery(this.value)">
+                <input list="keywords" data-trans="search" placeholder="Search" class="filter-input"
+                    oninput="onFilterGallery(this.value)" onclick="onFilterGallery('')">
             </div>
             <datalist id="keywords">
                 <option data-trans="cute" value="cute">
@@ -45,13 +46,16 @@
             </datalist>
             <div class="keywords-by-popularity"></div>
             <button class="more-keywords-btn" data-trans="more" onclick="onExpandKeywords()">more</button>
+            <button class="flexible-btn" title="Random Meme" onclick="onFlexible()"><img src="./assets/icons/dice.png"
+                    alt=""></button>
+
         </div>
         <div class="gallery ltr"></div>
 
     </section>
     <section class="meme-creator hide">
         <div class="canvas-container">
-            <canvas width="400" height="400" class="canvas" onclick=""></canvas>
+            <canvas width="420" height="420" class="canvas" onclick=""></canvas>
         </div>
         <div class="edit-container">
             <div class="flex justify-center">
@@ -86,16 +90,15 @@
                 </button>
                 <button class="color-btn">
                     <img src="./assets/icons/stroke-color-icon.png" alt="">
-                    <input type="color" name="" id="" class="color-input"
-                        oninput="onStrokeColorChange(this.value)">
+                    <input type="color" name="" id="" class="color-input" oninput="onStrokeColorChange(this.value)">
                 </button>
 
-                <button class="flexible-btn" onclick="onFlexible()"><img src="./assets/icons/dice.png" alt=""></button>
                 <button onclick="onSaveMeme()"><img src="./assets/icons/save-icon.png" alt=""></button>
-                <select class="font-input" style="font-family: valera-round;" value="impacted" onchange="onSelectFont(this.value)">
-                    <option value="impacted">impacted</option>
-                    <option value="poppins">poppins</option>
-                    <option value="valera-round">valera</option>
+                <select class="font-input" style="font-family: valera-round;" value="impacted"
+                    onchange="onSelectFont(this.value)">
+                    <option value="impacted" style="font-family:impacted;">impacted</option>
+                    <option value="poppins" style="font-family:poppins;">poppins</option>
+                    <option value="valera-round" style="font-family:valera-round;">valera</option>
                 </select>
             </div>
             <div class="emoji-container">
@@ -128,7 +131,10 @@
 
             </div>
     </section>
-    <section class="saved-memes gallery hide"></section>
+    <section class="saved-memes-container hide">
+        <h1 class="txt-center">Saved Memes</h1>
+        <div class="saved-memes gallery"></div>
+    </section>
 
 
 
@@ -139,7 +145,6 @@
     <script src="./js/service/meme.service.js"></script>
     <script src="./js/controller/gallery.controller.js"></script>
     <script src="./js/controller/meme.controller.js"></script>
-    <script src="./js/main.js"></script>
 </body>
 
 </html>

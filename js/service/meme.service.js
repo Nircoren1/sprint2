@@ -20,11 +20,10 @@ var gImgs = [
     { id: 18, url: 'assets/meme-imgs-diverse-shape/patrick.jpg', keywords: ['funny'] },
     { id: 19, url: 'assets/meme-imgs-diverse-shape/img6.jpg', keywords: ['funny'] },
     { id: 20, url: 'assets/meme-imgs-diverse-shape/img4.jpg', keywords: ['trump'] },
-    { id: 21, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny'] },
-
-
+    { id: 21, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['funny'] }
 
 ];
+
 var gKeywords = loadFromStorage('keywords') ? loadFromStorage('keywords') : {
     trump: 20,
     funny: 20,
@@ -86,6 +85,7 @@ function setLineTxt(txt) {
 
 function pushLine(attributes) {
     gMeme.lines.push(attributes);
+    gMeme.selectedLineIdx = gMeme.lines.length-1
 }
 
 function pushImg(img) {
