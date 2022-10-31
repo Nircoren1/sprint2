@@ -1,6 +1,6 @@
 var gKeywordSearchCountMap = { 'funny': 12, 'cat': 16, 'baby': 2 }
 var gImgs = [
-    { id: 1, url: 'assets/meme-imgs-square/1.jpg', keywords: ['trump', 'funny'] },
+    { id: 1, url: 'assets/meme-imgs-square/1.jpg', keywords: ['funny'] },
     { id: 2, url: 'assets/meme-imgs-square/2.jpg', keywords: ['cute', 'dog'] },
     { id: 3, url: 'assets/meme-imgs-diverse-shape/img2.jpg', keywords: ['bed', 'baby', 'dog'] },
     { id: 4, url: 'assets/meme-imgs-square/4.jpg', keywords: ['funny', 'cat'] },

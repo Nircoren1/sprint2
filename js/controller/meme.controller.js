@@ -9,16 +9,30 @@ let gClickedText;
 let gSavedMemeIdx = null;
 let gRotated = null;
 var gStartPos;
+
 function onInit() {
     gElCanvas = document.querySelector('canvas');
     gCtx = gElCanvas.getContext('2d');
-    renderMeme();
-    renderGallery();
+    renderGallery()
     renderSavedMemes()
     renderKeyWords()
     addListeners()
+    loadFonts()
+}
 
-
+function loadFonts() {
+    const font1 = new FontFace("valera-round", "url(../../style/fonts/VarelaRound-Regular.ttf)");
+    const font2 = new FontFace("impacted", "url(../../style/fonts/Impacted.ttf)");
+    const font3 = new FontFace("poppins", "url(../../style/fonts/Poppins-Regular.ttf)");
+    document.fonts.add(font1);
+    font1.load();
+    document.fonts.add(font2);
+    font2.load();
+    document.fonts.add(font3);
+    font3.load();
+    document.fonts.ready.then(() => {
+        renderMeme()
+    });
 }
 
 function addListeners() {
@@ -58,7 +72,7 @@ image_input.addEventListener("change", function () {
     });
 });
 
-function renderMeme(flexible = false, savedMeme = false) {
+function renderMeme(savedMeme = false) {
     const meme = getGMeme();
     const img = new Image();
     const imgs = getGimgs();
@@ -67,10 +81,7 @@ function renderMeme(flexible = false, savedMeme = false) {
         gElCanvas.height = (gElCanvas.width * img.naturalHeight) / img.naturalWidth;
         gCtx.beginPath();
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
-        if (flexible) {
-            addFlexibleLines();
-            flexible = false;
-        }
+     
         meme.lines.forEach((line, idx) => {
             if (meme.selectedLineIdx !== idx) deg = 0
             if (meme.selectedLineIdx === idx && !savedMeme) {
@@ -167,7 +178,7 @@ function onSwitchLine() {
     renderMeme()
 }
 
-function onFlexible(randImg = false) {
+function onFlexible() {
     document.querySelector('.meme-creator').classList.remove('hide');
     document.querySelector('.gallery-container').classList.add('hide');
     document.querySelector('.saved-memes-container').classList.add('hide');
@@ -175,8 +186,9 @@ function onFlexible(randImg = false) {
     document.querySelector('.gallery-link').classList.remove('active');
     setLines([]);
     setSelectedLine(-1);
-    if(randImg) setImg(getRandomIntInclusive(1, getGimgs().length));
-    renderMeme(true);
+    addFlexibleLines()
+    setSelectedImg(getRandomIntInclusive(1,20))
+    renderMeme()
 }
 
 function addFlexibleLines() {
@@ -198,7 +210,7 @@ function addFlexibleLines() {
 
 function onSaveMeme() {
     setSelectedLine(-1);
-    renderMeme(false, true);
+    renderMeme(true);
 }
 
 function downloadImg(elLink) {

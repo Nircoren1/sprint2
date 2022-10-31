@@ -51,6 +51,10 @@ const gTrans = {
         en: 'more',
         he: 'עוד',
     },
+    'saved-memes': {
+        en: 'saved Memes',
+        he: 'ממים שמורים',
+    },
 
    
 }

@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
     font-family: poppins;
     src: url(./fonts/Poppins-Regular.ttf);
 }
@@ -11,7 +11,7 @@
 @font-face {
     font-family: valera-round;
     src: url(./fonts/VarelaRound-Regular.ttf);
-}
+} */
 
 .flex {
     display: flex;
