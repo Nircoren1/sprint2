@@ -21,9 +21,9 @@ function onInit() {
 }
 
 function loadFonts() {
-    const font1 = new FontFace("valera-round", "url(../../style/fonts/VarelaRound-Regular.ttf)");
-    const font2 = new FontFace("impacted", "url(../../style/fonts/Impacted.ttf)");
-    const font3 = new FontFace("poppins", "url(../../style/fonts/Poppins-Regular.ttf)");
+    const font1 = new FontFace("valera-round", "url(style/fonts/VarelaRound-Regular.ttf)");
+    const font2 = new FontFace("impacted", "url(style/fonts/Impacted.ttf)");
+    const font3 = new FontFace("poppins", "url(style/fonts/Poppins-Regular.ttf)");
     document.fonts.add(font1);
     font1.load();
     document.fonts.add(font2);
