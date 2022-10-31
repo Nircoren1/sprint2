@@ -13,11 +13,11 @@ var gStartPos;
 function onInit() {
     gElCanvas = document.querySelector('canvas');
     gCtx = gElCanvas.getContext('2d');
-    renderGallery()
-    renderSavedMemes()
-    renderKeyWords()
-    addListeners()
-    loadFonts()
+    renderGallery();
+    renderSavedMemes();
+    renderKeyWords();
+    addListeners();
+    loadFonts();
 }
 
 function loadFonts() {
